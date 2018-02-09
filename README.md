@@ -2,7 +2,7 @@
 
 Gitter:
 Private Community:
-https://gitter.im/442-Team-2/Lobby#
+https://gitter.im/442-Team-2/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link
 
 Project Description:
 MVP:
