@@ -1,0 +1,12 @@
+Meeting date and time
+
+Meeting attendance. Any team member who are missing must be marked as either "unexcused absence" or "excused absence" along with a valid reason for the absence 
+with notification to the team more than 24 hours prior to the meeting
+
+Brief summary of the meeting discussion
+
+List explicitly and in detail what each individual team member accomplished since the last meeting
+
+List explicitly and in detail what each individual team member will accomplish before the next meeting. 
+
+All team members must have at least 1 task listed here and each task must have a GitHub issue associated with it in the project repository
