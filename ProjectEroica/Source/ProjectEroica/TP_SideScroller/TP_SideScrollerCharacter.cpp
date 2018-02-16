@@ -2,6 +2,7 @@
 
 #include "TP_SideScrollerCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "TimerManager.h" 
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -36,12 +37,14 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 2000.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->GravityScale = 2.f;
+	GetCharacterMovement()->GravityScale = 2.0f;
 	GetCharacterMovement()->AirControl = 0.80f;
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
-	GetCharacterMovement()->GroundFriction = 3.f;
+	GetCharacterMovement()->GroundFriction = 0.f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -50,15 +53,24 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//if (GetWorld() != nullptr)
-	//{
-	//	float curr = GetWorld()->GetRealTimeSeconds();
-	//	FKey A = FKey(A);
-	//	if (ourPlayer->WasInputKeyJustPressed(A)) {
-	//		UE_LOG(LogTemp, Warning, TEXT("Left pressed: %f"), curr);
-	//	}
-	//}
-	//else UE_LOG(LogTemp, Warning, TEXT("World  Null!!!"));
+	ourPlayer = GetWorld()->GetFirstPlayerController();
+	float curr = GetWorld()->GetRealTimeSeconds();
+	if (ourPlayer->WasInputKeyJustPressed(FKey("Left"))) {
+		handleRight(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Left pressed: %f"), curr);
+	}
+	else if (ourPlayer->WasInputKeyJustPressed(FKey("Right"))) {
+		handleLeft(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Right pressed: %f"), curr);
+	}
+	else if (ourPlayer->WasInputKeyJustPressed(FKey("Up"))) {
+		handleUp(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Up pressed: %f"), curr);
+	}
+	else if (ourPlayer->WasInputKeyJustPressed(FKey("Down"))) {
+		handleDown(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Down pressed: %f"), curr);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,9 +88,32 @@ void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent*
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_SideScrollerCharacter::MoveRight);
 
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATP_SideScrollerCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ATP_SideScrollerCharacter::TouchStopped);
 }
+
+void ATP_SideScrollerCharacter::Jump()
+{
+	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+	GetCharacterMovement()->StopActiveMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+	Super::Jump();
+	State = Jumping;
+}
+
+void ATP_SideScrollerCharacter::stopMovement()
+{
+	GetCharacterMovement()->StopMovementImmediately();
+}
+
+bool ATP_SideScrollerCharacter::moveIsValid(FString desiredMove)
+{
+	return false;
+}
+
+FString ATP_SideScrollerCharacter::getState()
+{
+	return State;
+}
+
 
 void ATP_SideScrollerCharacter::MoveRight(float Value)
 {
@@ -89,14 +124,39 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 	AddMovementInput(FVector(0.f,-Value,0.f));
 }
 
-void ATP_SideScrollerCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
+void ATP_SideScrollerCharacter::handleRight(float timePressed)
 {
-	// jump on any touch
-	Jump();
+	if (timePressed - prevDash >= dashCoolDown)
+	{
+		if (timePressed - prevRight < dashThreshold) {
+			LaunchCharacter(FVector(0.f, dashForce, 0.f),true,false);
+			GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
+			prevDash = timePressed;
+			State = Dashing;
+		}
+		prevRight = timePressed;
+	}
 }
 
-void ATP_SideScrollerCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location)
+void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 {
-	StopJumping();
+	if (timePressed - prevDash >= dashCoolDown)
+	{
+		if (timePressed - prevLeft < dashThreshold) {
+			LaunchCharacter(FVector(0.f, -dashForce, 0.f), true, false);
+			GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
+			prevDash = timePressed;
+		}
+		prevLeft = timePressed;
+	}
+}
+
+void ATP_SideScrollerCharacter::handleUp(float timePressed)
+{
+}
+
+void ATP_SideScrollerCharacter::handleDown(float timePressed)
+{
+	prevDown = timePressed;
 }
 

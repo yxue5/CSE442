@@ -14,7 +14,7 @@ class PROJECTEROICA_API AProjectEroicaGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
-	
+public:
+	AProjectEroicaGameModeBase();
 	
 };
