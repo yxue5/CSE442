@@ -73,3 +73,9 @@ Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+#Sample files from our Old Project
+Content/UnusedBPs/*
+
+# Art Assets
+Content/Art_Assets/*

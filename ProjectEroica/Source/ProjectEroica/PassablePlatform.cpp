@@ -2,6 +2,7 @@
 
 #include "PassablePlatform.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "TP_SideScroller/TP_SideScrollerCharacter.h"
 
 // Sets default values
@@ -15,9 +16,17 @@ APassablePlatform::APassablePlatform()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	
-	MeshComp->OnComponentHit.AddDynamic(this, &APassablePlatform::OnComponentHit);
 	RootComponent = MeshComp;
+
+	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
+	BoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BoxComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	BoxComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	BoxComp->SetupAttachment(MeshComp);
+
+	BoxComp->OnComponentEndOverlap.AddDynamic(this, &APassablePlatform::OnBoxEndOverlap);
+	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &APassablePlatform::OnBoxBeginOverlap);
+
 }
 
 // Called when the game starts or when spawned
@@ -34,42 +43,35 @@ void APassablePlatform::Tick(float DeltaTime)
 
 }
 
-void APassablePlatform::NotifyActorBeginOverlap(AActor * OtherActor)
-{
+
+void APassablePlatform::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
 	if (validChar) {
-		UE_LOG(LogTemp, Warning, TEXT("CharLocation:"), validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z);
-		UE_LOG(LogTemp, Warning, TEXT("PlatLocation:"), validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z);
-		//if actor is just above plat then make plat solid
-		if (validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z) {
-			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);	
-			UE_LOG(LogTemp, Warning, TEXT("Case 2"));
-			charsOnPlat.Add(validChar);
-		}
-		else if (validChar->GetActorLocation().Z < MeshComp->GetComponentLocation().Z //if actor is below plat and up is pressed
-			&& validChar->ourPlayer->IsInputKeyDown(FKey("Up"))) {
-			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-			UE_LOG(LogTemp, Warning, TEXT("Case 3"));
-		}
+		MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		UE_LOG(LogTemp, Warning, TEXT("Case LeavePlat"));
+		validChar->currPlat = nullptr;
 	}
 }
 
-void APassablePlatform::OnComponentHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+void APassablePlatform::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//allows char to leave plat
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
-	//if actor is above plat and down is pressed let it pass through
-	if (validChar)
-	{
-		if (validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z
-			&& validChar->ourPlayer->IsInputKeyDown(FKey("Down"))) {
-			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-			UE_LOG(LogTemp, Warning, TEXT("Case 1"));
+	if (validChar) {
+		//if actor is just above plat then make plat solid
+		if (validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z) {
+			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			UE_LOG(LogTemp, Warning, TEXT("Case Land"));
+			validChar->currPlat = this;
 		}
-		else if (validChar->GetActorLocation().Z < MeshComp->GetComponentLocation().Z //if actor is below plat and up is pressed
-			&& GetWorld()->GetRealTimeSeconds()- validChar->prevDown <.5) {
+		if (validChar->GetActorLocation().Z < MeshComp->GetComponentLocation().Z //if actor is below plat and up was just pressed
+			&& GetWorld()->GetRealTimeSeconds() - validChar->prevUp <.5) {
 			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-			UE_LOG(LogTemp, Warning, TEXT("Case 3"));
+			UE_LOG(LogTemp, Warning, TEXT("Case Ascend"));
 		}
 	}
+
 }
 
