@@ -8,12 +8,15 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "PassablePlatform.h"
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate when the controller rotates.
 	bUseControllerRotationPitch = false;
@@ -36,13 +39,14 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 2000.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 4000.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->GravityScale = 2.0f;
 	GetCharacterMovement()->AirControl = 0.80f;
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
 	GetCharacterMovement()->GroundFriction = 0.f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
+
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
@@ -57,11 +61,11 @@ void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 	float curr = GetWorld()->GetRealTimeSeconds();
 	if (ourPlayer->WasInputKeyJustPressed(FKey("Left"))) {
 		handleRight(curr);
-		UE_LOG(LogTemp, Warning, TEXT("Left pressed: %f"), curr);
+	//	UE_LOG(LogTemp, Warning, TEXT("Left pressed: %f"), curr);
 	}
 	else if (ourPlayer->WasInputKeyJustPressed(FKey("Right"))) {
 		handleLeft(curr);
-		UE_LOG(LogTemp, Warning, TEXT("Right pressed: %f"), curr);
+	//	UE_LOG(LogTemp, Warning, TEXT("Right pressed: %f"), curr);
 	}
 	else if (ourPlayer->WasInputKeyJustPressed(FKey("Up"))) {
 		handleUp(curr);
@@ -153,10 +157,17 @@ void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 
 void ATP_SideScrollerCharacter::handleUp(float timePressed)
 {
+	prevUp = timePressed;
 }
 
 void ATP_SideScrollerCharacter::handleDown(float timePressed)
 {
 	prevDown = timePressed;
+	if (currPlat != nullptr) {
+		if (currPlat->BoxComp->IsOverlappingActor(this)) {
+			currPlat->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+			currPlat = nullptr;
+		}
+	}
 }
 

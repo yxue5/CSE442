@@ -79,4 +79,7 @@ public:
 	float prevUp, prevDown, prevLeft, prevRight, prevAttack = 0;
 	float prevDash = 0;
 
+	UPROPERTY(VisibleAnywhere)
+		class APassablePlatform* currPlat;
+
 };
