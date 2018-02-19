@@ -38,4 +38,5 @@ https://www.youtube.com/watch?v=B1s6-eTmNmE
 Team Roles:
 Yang: Character Logic developer, UI Developer
 Jie: Animation programmr
-Xinyu: Material Programmer
+Xinyu: Material Programmer, Record and upload Meeting Minutes
+
