@@ -1,12 +1,11 @@
-Meeting date and time
+Date:2/13/2018
+Time: 4 p.m. - 5 p.m.
 
-Meeting attendance. Any team member who are missing must be marked as either "unexcused absence" or "excused absence" along with a valid reason for the absence 
-with notification to the team more than 24 hours prior to the meeting
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
 
-Brief summary of the meeting discussion
-
-List explicitly and in detail what each individual team member accomplished since the last meeting
-
-List explicitly and in detail what each individual team member will accomplish before the next meeting. 
-
-All team members must have at least 1 task listed here and each task must have a GitHub issue associated with it in the project repository
+Summary: 
+We setup the GitHub branches today. Yang uploaded all of the previous work to the Github Develop branch. Besides, Yang briefly talked about the main idea about the game that we going to create and show us the basic tool in Unreal. Yang is in charge of character logic, Jie is in charge of animation programming and Xinyu is in charge of material programming. 
+Before the next meeting, each team member should find some tutorial by themselves to have some general thought about their job.
