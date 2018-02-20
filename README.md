@@ -20,23 +20,22 @@ Air Dash
 Ground Combo 
 Jump Attack
 
-Advanced Moves:
-Flash Step
-Shadow Step
-
 Character Skills
 UI with hp bar, mp bar
 
 Additional Functionality:
-Sounds
-Online Functionality
+Sounds,
+Particle Effects, 
+Advanced Moves:
+Flash Step,
+Shadow Step,
 
 User Story:
 I want to make the spiritual successor to Grand Chase (pvp wise). Here's a video demonstrating the Grand Chase character we're modeling our first character after:
 https://www.youtube.com/watch?v=B1s6-eTmNmE
 
 Team Roles:
-Yang: Character Logic developer, UI Developer
-Jie: Animation programmr
-Xinyu: Material Programmer, Record and upload Meeting Minutes
+Yang: Character Logic developer. 
+Jie:  UI Developer, Animation programmr. 
+Xinyu: Material Programmer, Record and upload Meeting Minutes. 
 
