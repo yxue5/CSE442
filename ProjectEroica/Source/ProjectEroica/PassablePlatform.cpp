@@ -3,7 +3,7 @@
 #include "PassablePlatform.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "TP_SideScroller/TP_SideScrollerCharacter.h"
+#include "TP_SideScrollerCharacter.h"
 
 // Sets default values
 APassablePlatform::APassablePlatform()
@@ -26,7 +26,6 @@ APassablePlatform::APassablePlatform()
 
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &APassablePlatform::OnBoxEndOverlap);
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &APassablePlatform::OnBoxBeginOverlap);
-
 }
 
 // Called when the game starts or when spawned
