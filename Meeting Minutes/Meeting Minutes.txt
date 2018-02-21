@@ -12,8 +12,9 @@ Before the next meeting, each team member should find some tutorial by themselve
 
 
 
+
 Date: 2/21/2018
-Time: 3:00 - 4:00
+Time: 3:30 - 4:30
 
 Attend Member:
 Xinyu Chen
@@ -21,8 +22,8 @@ Yang Xue
 Jin Lin
 
 Summary:
-Yang was programmed character movement, the platform collations and the character animation.
-Jie was programming the HP and MP bar.
-Xinyu was programming the materials.
+Yang was programmed character movement, the platform collations and the character animation. Solved the issue 2 that submitted last week.
+Jie was programming the HP and MP bar but not finished.
+Xinyu was programming the materials and not finished.
 
-We submit the issue 3:Basic Movement Animations on Github. Before the next meeting, Jie and Xinyu should finished the HP and MP bar. Yang continues the character movement animation.
+We submit the issue 3:Basic Movement Animations on Github. Before the next meeting, Jie and Xinyu continue to work on HP and MP bar and should finished it by friday. Yang continues the character movement animation. We need to record the protocol video by friday 2/13/2018.
