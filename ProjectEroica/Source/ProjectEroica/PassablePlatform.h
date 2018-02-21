@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TP_SideScroller/TP_SideScrollerCharacter.h"
+#include "TP_SideScrollerCharacter.h"
 #include "PassablePlatform.generated.h"
 
-
+class UBoxComponent;
 UCLASS()
 class PROJECTEROICA_API APassablePlatform : public AActor
 {
@@ -33,5 +33,5 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* MeshComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class UBoxComponent* BoxComp;
+		UBoxComponent* BoxComp;
 };
