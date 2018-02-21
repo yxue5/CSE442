@@ -9,3 +9,20 @@ Jin Lin
 Summary: 
 We setup the GitHub branches today. Yang uploaded all of the previous work to the Github Develop branch. Besides, Yang briefly talked about the main idea about the game that we going to create and show us the basic tool in Unreal. Yang is in charge of character logic, Jie is in charge of animation programming and Xinyu is in charge of material programming. 
 Before the next meeting, each team member should find some tutorial by themselves to have some general thought about their job.
+
+
+
+Date: 2/21/2018
+Time: 3:00 - 4:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Yang was programmed character movement, the platform collations and the character animation.
+Jie was programming the HP and MP bar.
+Xinyu was programming the materials.
+
+We submit the issue 3:Basic Movement Animations on Github. Before the next meeting, Jie and Xinyu should finished the HP and MP bar. Yang continues the character movement animation.
