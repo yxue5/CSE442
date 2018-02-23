@@ -8,9 +8,13 @@ https://drive.google.com/open?id=1Ei3BZQcXsr9uNLbwt09PlJk3P34tAClF
 5) You can exit the game by alt tabbing and closing out the window.
 
 Game Moves:
+
 Attack Skill: If your MP bar is at least 1/5 full you can MP Skill
+
 Dash: Double tap left or right
+
 Jump: Press up
+
 Walk: Press/Hold left or right
 
 Youtube Link:
