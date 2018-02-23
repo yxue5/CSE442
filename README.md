@@ -3,7 +3,15 @@ INSTRUCTIONS TO PLAY GAME:
 1) Download from the following Link:
 https://drive.google.com/open?id=1Ei3BZQcXsr9uNLbwt09PlJk3P34tAClF
 2) Unzip the file
-3) Click on the WindowsNoEditor folder and then click ProjectEroica.Exe file inside of it
+3) Click on the WindowsNoEditor folder and if there's another WindowsNoEditor folder inside of it then click on that too. Then click the ProjectEroica.Exe file to run the game
+4) If Windows prompts you about security risks, then click more options on the bottom and choose run anyways
+5) You can exit the game by alt tabbing and closing out the window.
+
+Game Moves:
+Attack Skill: If your MP bar is at least 1/5 full you can MP Skill
+Dash: Double tap left or right
+Jump: Press up
+Walk: Press/Hold left or right
 
 Youtube Link:
 https://www.youtube.com/watch?v=SqbcTZX1K7I&feature=youtu.be
