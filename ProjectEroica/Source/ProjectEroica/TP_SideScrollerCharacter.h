@@ -9,7 +9,6 @@
 
 class UGameplayStatics;
 class UAnimInstanceKisa;
-
 UCLASS(config=Game)
 class ATP_SideScrollerCharacter : public ACharacter
 {
@@ -33,6 +32,8 @@ class ATP_SideScrollerCharacter : public ACharacter
 	FString Jumping = "Jump";
 	FString Attacking = "Attack";
 
+	FString BasicAttackOne = "BasicAttackOne";
+
 protected:
 	UFUNCTION()
 	void checkIdle();
@@ -47,6 +48,7 @@ protected:
 
 	void MoveRight(float Val);
 	
+	void Attack();
 	void handleRight(float timePressed);
 	void handleLeft(float timePressed);
 	void handleUp(float timePressed);
@@ -88,6 +90,8 @@ public:
 	float prevUp, prevDown, prevLeft, prevRight, prevAttack = 0;
 	float prevDash = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		class UCharacterStats* Stats;
 	UPROPERTY(VisibleAnywhere)
 		class APassablePlatform* currPlat;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animations")
