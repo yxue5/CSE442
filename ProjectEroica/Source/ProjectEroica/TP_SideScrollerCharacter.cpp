@@ -13,6 +13,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Classes/Components/SkeletalMeshComponent.h"
 #include "AnimInstanceKisa.h"
+#include "CharacterStats.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
@@ -38,6 +39,8 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	SideViewCameraComponent->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 
+	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Stats"));
+
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 4000.0f, 0.0f); // ...at this rotation rate
@@ -59,10 +62,6 @@ void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
-	//if (GetWorld() != nullptr)
-	//{
-	//	ourPlayer = GetWorld()->GetFirstPlayerController();
-	//}
 	float curr = GetWorld()->GetRealTimeSeconds();
 	if (AnimInst != nullptr) {
 		AnimInst->State = State;
@@ -94,6 +93,7 @@ void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent*
 {
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ATP_SideScrollerCharacter::Attack);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_SideScrollerCharacter::MoveRight);
 	ourPlayer = GetWorld()->GetFirstPlayerController();
@@ -157,6 +157,15 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 	}
 	// add movement in that direction
 	AddMovementInput(FVector(0.f,-Value,0.f));
+}
+
+void ATP_SideScrollerCharacter::Attack()
+{
+	if (State == Idle && Stats->mp > 20) {
+		State = BasicAttackOne;
+		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
+		Stats->mp -= 20;
+	}
 }
 
 void ATP_SideScrollerCharacter::handleRight(float timePressed)
