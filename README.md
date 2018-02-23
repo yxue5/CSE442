@@ -1,4 +1,12 @@
 # CSE442
+INSTRUCTIONS TO PLAY GAME:
+1) Download from the following Link:
+https://drive.google.com/open?id=1Ei3BZQcXsr9uNLbwt09PlJk3P34tAClF
+2) Unzip the file
+3) Click on the WindowsNoEditor folder and then click ProjectEroica.Exe file inside of it
+
+Youtube Link:
+https://www.youtube.com/watch?v=SqbcTZX1K7I&feature=youtu.be
 
 Gitter:
 Private Community:
