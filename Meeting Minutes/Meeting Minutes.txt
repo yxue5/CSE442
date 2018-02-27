@@ -27,3 +27,18 @@ Jie was programming the HP and MP bar but not finished.
 Xinyu was programming the materials and not finished.
 
 We submit the issue 3:Basic Movement Animations on Github. Before the next meeting, Jie and Xinyu continue to work on HP and MP bar and should finished it by friday. Yang continues the character movement animation. We need to record the protocol video by friday 2/13/2018.
+
+
+
+Date: 2/27/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week we publish the v0.1.0 release on Github.
+During the meeting, Yang explain about the FK/IK and give us all the art assets that we need.
+For the next week, Jie is going to do the FK/IK animation. Xinyu is going to make the ship viable map. Make the platform rotate if possible. Yang is going to add the collision when the character hit each other, add the demage if possible.
