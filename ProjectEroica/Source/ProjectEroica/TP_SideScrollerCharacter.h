@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Weapon.h"
 #include "TP_SideScrollerCharacter.generated.h"
+
 
 
 class UGameplayStatics;
@@ -20,6 +22,9 @@ class ATP_SideScrollerCharacter : public ACharacter
 	/** Camera boom positioning the camera beside the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	class AWeapon* CharWeapon;
 
 	FTimerHandle EndMovementHandle;
 
@@ -65,6 +70,8 @@ public:
 	ATP_SideScrollerCharacter();
 	UFUNCTION()
 		FString getState();
+	UFUNCTION()
+		AWeapon* getWep();
 	virtual void Tick(float DeltaTime) override;
 	//virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 	//	FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
@@ -96,4 +103,6 @@ public:
 		class APassablePlatform* currPlat;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimInstanceKisa* AnimInst;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons")
+		TSubclassOf<class AWeapon> WeaponClass;
 };

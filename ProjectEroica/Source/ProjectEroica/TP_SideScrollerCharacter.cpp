@@ -2,6 +2,7 @@
 
 #include "TP_SideScrollerCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Weapon.h"
 #include "TimerManager.h" 
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -14,6 +15,7 @@
 #include "Runtime/Engine/Classes/Components/SkeletalMeshComponent.h"
 #include "AnimInstanceKisa.h"
 #include "CharacterStats.h"
+#include "UObject/ConstructorHelpers.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
@@ -39,8 +41,9 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	SideViewCameraComponent->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 
+    //creates stats component
 	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Stats"));
-
+	AddOwnedComponent(Stats);
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 4000.0f, 0.0f); // ...at this rotation rate
@@ -51,11 +54,24 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
+	//Sets this capsule collision type to Enemy
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//GetMesh()->SetCollisionResponseToAllChannels(ECR_Overlap);
+	//GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+}
+
+AWeapon * ATP_SideScrollerCharacter::getWep()
+{
+	return CharWeapon;
 }
 
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
@@ -77,6 +93,7 @@ void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 		handleDown(curr);
 		UE_LOG(LogTemp, Warning, TEXT("Down pressed: %f"), curr);
 	}
+
 }
 
 //void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
@@ -107,6 +124,15 @@ void ATP_SideScrollerCharacter::BeginPlay()
 		ourPlayer = GetWorld()->GetFirstPlayerController();
 	}
 	//AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
+	//spawn and attach weapon
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	if (WeaponClass != NULL)
+	{
+		CharWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, FVector(0), FRotator(0), SpawnParams);
+		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
+	}
+
 }
 
 void ATP_SideScrollerCharacter::Jump()
@@ -121,6 +147,7 @@ void ATP_SideScrollerCharacter::Jump()
 void ATP_SideScrollerCharacter::stopMovement()
 {
 	GetCharacterMovement()->StopMovementImmediately();
+	CharWeapon->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECR_Ignore);
 	State = Idle;
 }
 
@@ -162,6 +189,7 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 void ATP_SideScrollerCharacter::Attack()
 {
 	if (State == Idle && Stats->mp > 20) {
+		CharWeapon->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECR_Overlap);
 		State = BasicAttackOne;
 		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
 		Stats->mp -= 20;
@@ -207,6 +235,7 @@ void ATP_SideScrollerCharacter::handleDown(float timePressed)
 	if (currPlat != nullptr) {
 		if (currPlat->BoxComp->IsOverlappingActor(this)) {
 			currPlat->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+			State = "Jump";
 			currPlat = nullptr;
 		}
 	}

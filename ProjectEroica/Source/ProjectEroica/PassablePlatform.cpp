@@ -39,7 +39,7 @@ void APassablePlatform::BeginPlay()
 void APassablePlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UE_LOG(LogTemp, Warning, TEXT("Plat Collision Type"), BoxComp->GetCollisionResponseToChannel(ECC_Pawn));
 }
 
 
@@ -56,6 +56,7 @@ void APassablePlatform::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent
 void APassablePlatform::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Overlap"));
 	//allows char to leave plat
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
 	if (validChar) {
