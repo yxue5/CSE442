@@ -23,8 +23,6 @@ void UCharacterStats::BeginPlay()
 {
 	Super::BeginPlay();
 	updateStats();
-
-	
 }
 
 void UCharacterStats::updateStats()
@@ -32,8 +30,10 @@ void UCharacterStats::updateStats()
 	GetWorld()->GetTimerManager().SetTimer(UpdateStatsHandle, this, &UCharacterStats::updateStats, .1f, false);
 	if(hp < maxHP)
 		hp += hpRegen;
-	if(mp < maxMP)
+	if (mp < maxMP)
+	{
 		mp += mpRegen;
+	}
 }
 
 float UCharacterStats::hpPercent()
@@ -43,6 +43,7 @@ float UCharacterStats::hpPercent()
 
 float UCharacterStats::mpPercent()
 {
+	
 	return mp / maxMP;
 }
 
