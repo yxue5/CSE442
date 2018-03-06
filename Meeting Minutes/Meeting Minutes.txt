@@ -42,3 +42,18 @@ Summary:
 Last week we publish the v0.1.0 release on Github.
 During the meeting, Yang explain about the FK/IK and give us all the art assets that we need.
 For the next week, Jie is going to do the FK/IK animation. Xinyu is going to make the ship viable map. Make the platform rotate if possible. Yang is going to add the collision when the character hit each other, add the demage if possible.
+
+
+
+Date: 3/6/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Xinyu has worked on the game map and tried to fix the centering problem. Jie has worked on the FK/IK animation and tried to solve the walk animation problem. Yang has finished add the weapon.
+Yang is going to fix the damage and collison. Jie and Xinyu continue to fix the problem.
+
