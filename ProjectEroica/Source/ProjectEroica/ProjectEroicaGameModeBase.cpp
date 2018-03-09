@@ -10,6 +10,7 @@ AProjectEroicaGameModeBase::AProjectEroicaGameModeBase() {
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	
 }
 
 
