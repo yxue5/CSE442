@@ -15,13 +15,11 @@
 #include "Runtime/Engine/Classes/Components/SkeletalMeshComponent.h"
 #include "AnimInstanceKisa.h"
 #include "CharacterStats.h"
+#include "AttackHandler.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
-	// Set size for collision capsule
-	//GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	// Don't rotate when the controller rotates.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -44,6 +42,10 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
     //creates stats component
 	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Stats"));
 	AddOwnedComponent(Stats);
+	
+	//creates attack component
+	AttackHandle = CreateDefaultSubobject<UAttackHandler>(TEXT("AttackHandle"));
+
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 4000.0f, 0.0f); // ...at this rotation rate
@@ -66,43 +68,7 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
-
 }
-
-AWeapon * ATP_SideScrollerCharacter::getWep()
-{
-	return CharWeapon;
-}
-
-void ATP_SideScrollerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
-	float curr = GetWorld()->GetRealTimeSeconds();
-	if (AnimInst != nullptr) {
-		AnimInst->State = State;
-	}
-	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
-	
-	checkIdle();
-	if (ourPlayer->WasInputKeyJustPressed(FKey("Up"))) {
-		handleUp(curr);
-		UE_LOG(LogTemp, Warning, TEXT("Up pressed: %f"), curr);
-	}
-	else if (ourPlayer->WasInputKeyJustPressed(FKey("Down"))) {
-		handleDown(curr);
-		UE_LOG(LogTemp, Warning, TEXT("Down pressed: %f"), curr);
-	}
-
-}
-
-//void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
-//{
-//	//return to idle when you land on a plat
-//	if (State == "Jump") {
-//		State = "Idle";
-//	}
-//}
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -130,43 +96,104 @@ void ATP_SideScrollerCharacter::BeginPlay()
 	if (WeaponClass != NULL)
 	{
 		CharWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, FVector(0), FRotator(0), SpawnParams);
+		CharWeapon->wepOwner = this;
 		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
 	}
 
 }
 
-void ATP_SideScrollerCharacter::Jump()
+void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 {
-	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
-	GetCharacterMovement()->StopActiveMovement();
-	GetCharacterMovement()->StopMovementImmediately();
-	Super::Jump();
-	State = Jumping;
+	Super::Tick(DeltaTime);
+	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
+	float curr = GetWorld()->GetRealTimeSeconds();
+	if (AnimInst != nullptr) {
+		AnimInst->State = State;
+	}
+	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
+
+	checkIdle();
+	if (ourPlayer->WasInputKeyJustPressed(FKey("Up"))) {
+		handleUp(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Up pressed: %f"), curr);
+	}
+	else if (ourPlayer->WasInputKeyJustPressed(FKey("Down"))) {
+		handleDown(curr);
+		UE_LOG(LogTemp, Warning, TEXT("Down pressed: %f"), curr);
+	}
 }
 
-void ATP_SideScrollerCharacter::stopMovement()
+AWeapon * ATP_SideScrollerCharacter::getWep()
 {
-	GetCharacterMovement()->StopMovementImmediately();
-	CharWeapon->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECR_Ignore);
-	State = Idle;
+	return CharWeapon;
 }
-
-bool ATP_SideScrollerCharacter::moveIsValid(FString desiredMove)
-{
-	return false;
-}
-
+//void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
+//{
+//	//return to idle when you land on a plat
+//	if (State == "Jump") {
+//		State = "Idle";
+//	}
+//}
 FString ATP_SideScrollerCharacter::getState()
 {
 	return State;
 }
 
+void ATP_SideScrollerCharacter::EndStun()
+{
+	ourPlayer->GetPawn()->EnableInput(ourPlayer);
+}
+
+void ATP_SideScrollerCharacter::setState(FString state)
+{
+	State = state;
+}
+
+void ATP_SideScrollerCharacter::stopMovement()
+{
+	GetCharacterMovement()->StopMovementImmediately();
+	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
+	State = Idle;
+}
+
+void ATP_SideScrollerCharacter::Attack()
+{
+	if (State == Idle && Stats->mp > 20) {
+		CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+		State = BaseCombo1;
+		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
+		Stats->mp -= 20;
+	}
+	AttackHandle->handleAttack(State);
+}
+
+void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration)
+{
+	UE_LOG(LogTemp, Warning, TEXT("dmg: %f"), dmg);
+	Stats->hp -= dmg;
+	State = stunType;
+	ourPlayer->GetPawn()->DisableInput(ourPlayer);
+	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
+	UE_LOG(LogTemp, Warning, TEXT("Hit!: %f"), Stats->hp);
+}
+
 void ATP_SideScrollerCharacter::checkIdle()
 {
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && 
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerRemaining(StunHandle) <= 0.f &&
 		GetCharacterMovement()->IsFalling() == false && GetCharacterMovement()->Velocity.X == 0)
 		State = Idle;
 }
+void ATP_SideScrollerCharacter::Jump()
+{
+	//cancels dash
+	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+	GetCharacterMovement()->StopActiveMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+	//proceeds to jump
+	Super::Jump();
+	State = Jumping;
+}
+
 void ATP_SideScrollerCharacter::MoveRight(float Value)
 {
 	float curr = GetWorld()->GetRealTimeSeconds();
@@ -186,15 +213,6 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 	AddMovementInput(FVector(0.f,-Value,0.f));
 }
 
-void ATP_SideScrollerCharacter::Attack()
-{
-	if (State == Idle && Stats->mp > 20) {
-		CharWeapon->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECR_Overlap);
-		State = BasicAttackOne;
-		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
-		Stats->mp -= 20;
-	}
-}
 
 void ATP_SideScrollerCharacter::handleRight(float timePressed)
 {

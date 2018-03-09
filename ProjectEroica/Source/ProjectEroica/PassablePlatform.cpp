@@ -39,7 +39,6 @@ void APassablePlatform::BeginPlay()
 void APassablePlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("Plat Collision Type"), BoxComp->GetCollisionResponseToChannel(ECC_Pawn));
 }
 
 
