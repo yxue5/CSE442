@@ -8,7 +8,6 @@
 #include "TP_SideScrollerCharacter.generated.h"
 
 
-
 class UGameplayStatics;
 class UAnimInstanceKisa;
 UCLASS(config=Game)
@@ -27,7 +26,7 @@ class ATP_SideScrollerCharacter : public ACharacter
 	class AWeapon* CharWeapon;
 
 	FTimerHandle EndMovementHandle;
-
+	FTimerHandle StunHandle;
 	//different states
 	FString State = Idle;
 
@@ -36,21 +35,23 @@ class ATP_SideScrollerCharacter : public ACharacter
 	FString Dashing = "Dash";
 	FString Jumping = "Jump";
 	FString Attacking = "Attack";
-
-	FString BasicAttackOne = "BasicAttackOne";
+	FString Stunned = "Stunned";
+	FString BaseCombo1= "BaseCombo1";
 
 protected:
+	//sets char back to idle when appropriate
 	UFUNCTION()
 	void checkIdle();
+
 	//stops dash from sliding
 	UFUNCTION()
 	void stopMovement();
-	/** Called for side to side input */
 
-	//determines if move is valid in regards to current state
+	//set state 
 	UFUNCTION()
-	bool moveIsValid(FString desiredMove);
+		void setState(FString state);
 
+	//handles horizontal axis
 	void MoveRight(float Val);
 	
 	void Attack();
@@ -58,6 +59,7 @@ protected:
 	void handleLeft(float timePressed);
 	void handleUp(float timePressed);
 	void handleDown(float timePressed);
+	void handleAnimation();
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void BeginPlay() override;
@@ -67,11 +69,17 @@ protected:
 
 
 public:
+	
 	ATP_SideScrollerCharacter();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		FString getState();
+	UFUNCTION(BlueprintCallable)
+		void EndStun();
 	UFUNCTION()
 		AWeapon* getWep();
+	//handles reaction to attack
+	UFUNCTION(BlueprintCallable)
+		void handleAttack(float dmg, FString stunType, float stunDuration);
 	virtual void Tick(float DeltaTime) override;
 	//virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 	//	FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
@@ -97,6 +105,8 @@ public:
 	float prevUp, prevDown, prevLeft, prevRight, prevAttack = 0;
 	float prevDash = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		class UAttackHandler* AttackHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		class UCharacterStats* Stats;
 	UPROPERTY(VisibleAnywhere)
