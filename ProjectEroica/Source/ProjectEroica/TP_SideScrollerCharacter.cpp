@@ -99,19 +99,26 @@ void ATP_SideScrollerCharacter::BeginPlay()
 		CharWeapon->wepOwner = this;
 		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
 	}
+<<<<<<< HEAD
+	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
+=======
 
+>>>>>>> DevelopNew
 }
 
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
 	float curr = GetWorld()->GetRealTimeSeconds();
+<<<<<<< HEAD
+	handleAnimation();
+=======
 	if (AnimInst != nullptr) {
 		AnimInst->State = State;
 	}
 	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
 
+>>>>>>> DevelopNew
 	checkIdle();
 	if (ourPlayer->WasInputKeyJustPressed(FKey("Up"))) {
 		handleUp(curr);
@@ -164,17 +171,33 @@ void ATP_SideScrollerCharacter::Attack()
 		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
 		Stats->mp -= 20;
 	}
+<<<<<<< HEAD
+
+	//determines what our attack does to the other player
+=======
+>>>>>>> DevelopNew
 	AttackHandle->handleAttack(State);
 }
 
 void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration)
 {
+<<<<<<< HEAD
+	UGameplayStatics::PlaySound2D(this, AnimInst->HitSound);
+	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
+	Stats->hp -= dmg;
+	State = stunType;
+
+	DisableInput(ourPlayer);
+	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
+	ReceiveAnyDamage(dmg, NULL, NULL, NULL);
+=======
 	UE_LOG(LogTemp, Warning, TEXT("dmg: %f"), dmg);
 	Stats->hp -= dmg;
 	State = stunType;
 	ourPlayer->GetPawn()->DisableInput(ourPlayer);
 	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
 	UE_LOG(LogTemp, Warning, TEXT("Hit!: %f"), Stats->hp);
+>>>>>>> DevelopNew
 }
 
 void ATP_SideScrollerCharacter::checkIdle()
@@ -257,5 +280,13 @@ void ATP_SideScrollerCharacter::handleDown(float timePressed)
 			currPlat = nullptr;
 		}
 	}
+}
+
+void ATP_SideScrollerCharacter::handleAnimation()
+{
+	if (AnimInst != nullptr) {
+		AnimInst->HandleState(State);
+	}
+	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
 }
 

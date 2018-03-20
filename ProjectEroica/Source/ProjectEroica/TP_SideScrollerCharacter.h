@@ -59,6 +59,7 @@ protected:
 	void handleLeft(float timePressed);
 	void handleUp(float timePressed);
 	void handleDown(float timePressed);
+	void handleAnimation();
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void BeginPlay() override;
@@ -77,7 +78,11 @@ public:
 	UFUNCTION()
 		AWeapon* getWep();
 	//handles reaction to attack
+<<<<<<< HEAD
+	UFUNCTION(BlueprintCallable)
+=======
 	UFUNCTION()
+>>>>>>> DevelopNew
 		void handleAttack(float dmg, FString stunType, float stunDuration);
 	virtual void Tick(float DeltaTime) override;
 	//virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
