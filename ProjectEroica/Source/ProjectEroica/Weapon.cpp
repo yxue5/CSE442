@@ -18,12 +18,20 @@ AWeapon::AWeapon()
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+<<<<<<< HEAD
+=======
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+>>>>>>> DevelopNew
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnWeaponBeginOverlap);
 	CapsuleComponent->SetupAttachment(MeshComp);
 }
 
+<<<<<<< HEAD
 void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, 
 	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+=======
+void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+>>>>>>> DevelopNew
 {
 	UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped actor!"));
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);

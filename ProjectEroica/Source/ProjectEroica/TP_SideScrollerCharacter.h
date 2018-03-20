@@ -78,7 +78,11 @@ public:
 	UFUNCTION()
 		AWeapon* getWep();
 	//handles reaction to attack
+<<<<<<< HEAD
 	UFUNCTION(BlueprintCallable)
+=======
+	UFUNCTION()
+>>>>>>> DevelopNew
 		void handleAttack(float dmg, FString stunType, float stunDuration);
 	virtual void Tick(float DeltaTime) override;
 	//virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
