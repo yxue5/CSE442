@@ -21,12 +21,21 @@ void UAttackHandler::BeginPlay()
 void UAttackHandler::handleAttack(FString attackName)
 {
 	if (attackName == "BaseCombo1") {
-<<<<<<< HEAD
-		stunDuration = 10;
-=======
 		stunDuration = 1;
->>>>>>> DevelopNew
 		dmg = 15;
 		hitType = "Stunned";
+	}
+}
+
+FString UAttackHandler::DetermineAttack(FString currState)
+{
+	if (currState == "Dash") {
+		return "DashAttack";
+	}
+	else if (currState == "Idle") {
+		return "BaseCombo1";
+	}
+	else if (currState == "Jump") {
+		return "JumpAttack";
 	}
 }

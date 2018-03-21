@@ -23,7 +23,8 @@ protected:
 public:	
 	UFUNCTION()
 	void handleAttack(FString attackName);
-
+	UFUNCTION()
+	FString DetermineAttack(FString currState);
 	UPROPERTY(VisibleAnywhere)
 		float stunDuration = 0;
 	UPROPERTY(VisibleAnywhere)

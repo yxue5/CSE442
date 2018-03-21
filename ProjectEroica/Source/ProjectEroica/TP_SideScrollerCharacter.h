@@ -37,6 +37,7 @@ class ATP_SideScrollerCharacter : public ACharacter
 	FString Attacking = "Attack";
 	FString Stunned = "Stunned";
 	FString BaseCombo1= "BaseCombo1";
+	FString Land = "Land";
 
 protected:
 	//sets char back to idle when appropriate
@@ -78,15 +79,11 @@ public:
 	UFUNCTION()
 		AWeapon* getWep();
 	//handles reaction to attack
-<<<<<<< HEAD
-	UFUNCTION(BlueprintCallable)
-=======
 	UFUNCTION()
->>>>>>> DevelopNew
 		void handleAttack(float dmg, FString stunType, float stunDuration);
 	virtual void Tick(float DeltaTime) override;
-	//virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
-	//	FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
+		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 	APlayerController* ourPlayer = nullptr;
 	/** Returns SideViewCameraComponent subobject **/
