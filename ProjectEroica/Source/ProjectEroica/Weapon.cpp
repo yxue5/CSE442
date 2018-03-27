@@ -30,6 +30,7 @@ void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AA
 	UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped actor!"));
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
 	if (validChar && validChar!= wepOwner) {
+		
 		validChar->handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration);
 	}
 }
