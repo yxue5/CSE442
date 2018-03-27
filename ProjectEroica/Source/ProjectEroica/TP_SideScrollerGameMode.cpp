@@ -4,9 +4,12 @@
 #include "TP_SideScrollerCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
+// set default pawn class to our Blueprinted character
 ATP_SideScrollerGameMode::ATP_SideScrollerGameMode()
-{
-	// set default pawn class to our Blueprinted character
+{	
+	//  get default pawn class from "/Game/SideScrollerCPP/Blueprints/SideScrollerCharacter", 
+	//  if there is pawn created in default pawn class, then set default class as player pawn class 
+	
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/SideScrollerCPP/Blueprints/SideScrollerCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
