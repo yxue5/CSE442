@@ -7,7 +7,7 @@
 #include "AnimInstanceKisa.generated.h"
 
 /**
- * 
+ Add sound while idle get hurt, land on floor, hit.
  */
 UCLASS()
 class PROJECTEROICA_API UAnimInstanceKisa : public UAnimInstance
