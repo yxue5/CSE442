@@ -3,8 +3,8 @@
 #include "ProjectEroicaGameModeBase.h"
 #include "UObject/ConstructorHelpers.h"
 
+// set default pawn class to our Blueprinted character
 AProjectEroicaGameModeBase::AProjectEroicaGameModeBase() {
-	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/BP_MyCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
