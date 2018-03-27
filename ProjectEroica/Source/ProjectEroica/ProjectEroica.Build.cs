@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
+
 using UnrealBuildTool;
 
 public class ProjectEroica : ModuleRules
 {
+	// read from the target rule and build the module rule
 	public ProjectEroica(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
