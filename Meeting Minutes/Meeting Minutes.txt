@@ -80,4 +80,4 @@ Jin Lin
 
 Summary:
 Last week, Jie complete the FK/IK animation and Xinyu complete the ShipMap animation and material, Yang add damage UI, animation sound and dash animation.
-This week, we need to submit the Alpha Release by Wednesday and we need to finished writing the project document.
+This week, we need to submit the Alpha Release by Wednesday and Xinyu and Jie need to finished writing the project document,Yang need to finish the AI part.
