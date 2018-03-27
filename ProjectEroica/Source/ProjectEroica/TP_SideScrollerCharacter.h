@@ -26,6 +26,7 @@ class ATP_SideScrollerCharacter : public ACharacter
 	class AWeapon* CharWeapon;
 
 	FTimerHandle EndMovementHandle;
+	FTimerHandle KnockupHandle;
 	FTimerHandle StunHandle;
 	//different states
 	FString State = Idle;
@@ -36,7 +37,9 @@ class ATP_SideScrollerCharacter : public ACharacter
 	FString Jumping = "Jump";
 	FString Attacking = "Attack";
 	FString Stunned = "Stunned";
-	FString BaseCombo1= "BaseCombo1";
+	FString Knockup = "Knockup";
+	FString OnGround = "OnGround";
+	FString BaseCombo1 = "BaseCombo1";
 	FString Land = "Land";
 
 protected:
@@ -81,6 +84,8 @@ public:
 	//handles reaction to attack
 	UFUNCTION()
 		void handleAttack(float dmg, FString stunType, float stunDuration);
+	UFUNCTION()
+		float getZRotation(FRotator rotation);
 	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;

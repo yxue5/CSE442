@@ -14,6 +14,9 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 		else if (newState == "BaseCombo1") {
 			UGameplayStatics::PlaySound2D(this, BaseCombo1);
 		}
+		else if (newState == "DashAttack") {
+			UGameplayStatics::PlaySound2D(this, DashAttackSound);
+		}
 	}
 	State = newState;
 }

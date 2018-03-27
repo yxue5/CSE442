@@ -22,13 +22,24 @@ protected:
 
 public:	
 	UFUNCTION()
-	void handleAttack(FString attackName);
+	void initializeAttack(FString attackName);
 	UFUNCTION()
 	FString DetermineAttack(FString currState);
+	UPROPERTY(VisibleAnywhere)
+		float attackDuration = 0;
 	UPROPERTY(VisibleAnywhere)
 		float stunDuration = 0;
 	UPROPERTY(VisibleAnywhere)
 		float dmg = 0;
+	UPROPERTY(EditDefaultsOnly)
+		float KnockupY = 0;
+	UPROPERTY(EditDefaultsOnly)
+		float KnockupZ = 0;
+
+	UPROPERTY(EditDefaultsOnly)
+		float DashAttackY = 500;
+	UPROPERTY(EditDefaultsOnly)
+		float DashAttackZ = 1000;
 	UPROPERTY(VisibleAnywhere)
 		FString hitType = "Stunned";
 };
