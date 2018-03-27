@@ -18,6 +18,7 @@ void UAttackHandler::BeginPlay()
 	
 }
 
+//Define the damage for each attack combo.
 void UAttackHandler::initializeAttack(FString attackName)
 {
 	if (attackName == "BaseCombo1") {
@@ -41,6 +42,8 @@ void UAttackHandler::initializeAttack(FString attackName)
 	}
 }
 
+
+//Determine the attack type.
 FString UAttackHandler::DetermineAttack(FString currState)
 {
 	if (currState == "Dash") {
