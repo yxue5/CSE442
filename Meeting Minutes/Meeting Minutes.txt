@@ -68,3 +68,16 @@ Jin Lin
 Summery:
 Last week, Xinyu has worked on the game map and made the gear and gearboard rotate, but has the problem with the rotate direction of gearboard. Jie has worked on the FK/IK animation and have problem with finding the right class for IK animated pawn class. Yang was still work on damage.
 Before the next meeting, Jie should finish the FK/IK animation and Xinyu should add the material on the ship and fix the problem. Yang is going to fix the damage for collision problem.
+
+
+Date: 3/27/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Jie complete the FK/IK animation and Xinyu complete the ShipMap animation and material, Yang add damage UI, animation sound and dash animation.
+This week, we need to submit the Alpha Release by Wednesday and we need to finished writing the project document.
