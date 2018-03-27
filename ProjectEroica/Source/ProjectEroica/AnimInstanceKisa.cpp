@@ -3,6 +3,10 @@
 #include "AnimInstanceKisa.h"
 #include "Kismet/GameplayStatics.h"
 
+/*
+This method is used to add sound while idle jump and land and playing attack combo.
+*/
+
 void UAnimInstanceKisa::HandleState(FString newState) {
 	if (newState != State) {
 		if (newState == "Dash") {
