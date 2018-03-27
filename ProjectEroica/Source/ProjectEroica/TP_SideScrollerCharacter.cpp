@@ -272,6 +272,7 @@ void ATP_SideScrollerCharacter::handleRight(float timePressed)
 	prevRight = timePressed;
 }
 
+
 void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 {
 
@@ -326,3 +327,4 @@ void ATP_SideScrollerCharacter::handleAnimation()
 	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
 }
 
+// comment done
