@@ -25,7 +25,9 @@ class ATP_SideScrollerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
 	class AWeapon* CharWeapon;
 
+protected:
 	FTimerHandle EndMovementHandle;
+	FTimerHandle AttackingHandle;
 	FTimerHandle KnockupHandle;
 	FTimerHandle StunHandle;
 	//different states
@@ -42,7 +44,6 @@ class ATP_SideScrollerCharacter : public ACharacter
 	FString BaseCombo1 = "BaseCombo1";
 	FString Land = "Land";
 
-protected:
 	//sets char back to idle when appropriate
 	UFUNCTION()
 	void checkIdle();
@@ -50,6 +51,12 @@ protected:
 	//stops dash from sliding
 	UFUNCTION()
 	void stopMovement();
+
+	UFUNCTION()
+		void Dash(float Direction);
+
+	UFUNCTION()
+		void stopAttack();
 
 	//set state 
 	UFUNCTION()
@@ -83,9 +90,7 @@ public:
 		AWeapon* getWep();
 	//handles reaction to attack
 	UFUNCTION()
-		void handleAttack(float dmg, FString stunType, float stunDuration);
-	UFUNCTION()
-		float getZRotation(FRotator rotation);
+		void handleAttack(float dmg, FString stunType, float stunDuration, FVector force, float attackDirection);
 	virtual void Tick(float DeltaTime) override;
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;

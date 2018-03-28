@@ -32,14 +32,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		float dmg = 0;
 	UPROPERTY(EditDefaultsOnly)
-		float KnockupY = 0;
-	UPROPERTY(EditDefaultsOnly)
-		float KnockupZ = 0;
+		FVector KnockupForce = FVector(0, 0, 0);
 
 	UPROPERTY(EditDefaultsOnly)
-		float DashAttackY = 500;
+		float DashAttackY = 200;
 	UPROPERTY(EditDefaultsOnly)
-		float DashAttackZ = 1000;
+		float DashAttackZ = 600;
 	UPROPERTY(VisibleAnywhere)
 		FString hitType = "Stunned";
 };

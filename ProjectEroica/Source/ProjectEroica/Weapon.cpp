@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "TP_SideScrollerCharacter.h"
 #include "AttackHandler.h"
+#include "AI_Kisa.h"
 //#include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -29,9 +30,18 @@ void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AA
 {
 	UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped actor!"));
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
+	AAI_Kisa* validEnemy = Cast<AAI_Kisa>(OtherActor);
 	if (validChar && validChar!= wepOwner) {
-		
-		validChar->handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration);
+		UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped player!"));
+		validChar->handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration,wepOwner->AttackHandle->KnockupForce,wepOwner->GetActorRotation().Yaw);
+	}
+	
+	//or if we hit enemy
+	else if (OtherActor->GetClass()->IsChildOf(ATP_SideScrollerCharacter::StaticClass())) {
+		if (validEnemy && validEnemy != wepOwner) {
+			UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped enemy!"));
+			validEnemy->Super::handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration, wepOwner->AttackHandle->KnockupForce, wepOwner->GetActorRotation().Yaw);
+		}	
 	}
 }
 

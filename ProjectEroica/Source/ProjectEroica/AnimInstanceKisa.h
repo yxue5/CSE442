@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* HitSound;
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundBase* JumpAttackSound;
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* BaseCombo1;
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* PainSound;
