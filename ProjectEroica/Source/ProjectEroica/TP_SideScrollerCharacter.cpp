@@ -102,11 +102,6 @@ void ATP_SideScrollerCharacter::BeginPlay()
 	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
 }
 
-float ATP_SideScrollerCharacter::getZRotation(FRotator rotation)
-{
-	return rotation.Yaw;
-}
-
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -131,7 +126,7 @@ AWeapon * ATP_SideScrollerCharacter::getWep()
 void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	//return to idle when you land on a plat
-	if (State == Jumping ) {
+	if (State == Jumping || State == Knockup) {
 		State = Land;
 	}
 }
@@ -153,13 +148,28 @@ void ATP_SideScrollerCharacter::setState(FString state)
 void ATP_SideScrollerCharacter::stopMovement()
 {
 	GetCharacterMovement()->StopMovementImmediately();
-	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
 	if (GetCharacterMovement()->IsFalling()) {
 		State = Jumping;
 	}
 	else State = Idle;
 }
 
+void ATP_SideScrollerCharacter::Dash(float Direction)
+{
+	LaunchCharacter(FVector(0.f, dashForce * Direction, 0.f), true, false);
+	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
+	State = Dashing;
+	UE_LOG(LogTemp, Warning, TEXT("Dash "));
+}
+
+void ATP_SideScrollerCharacter::stopAttack() {
+	GetCharacterMovement()->StopMovementImmediately();
+	if (GetCharacterMovement()->IsFalling()) {
+		State = Jumping;
+	}
+	else State = Idle;
+	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
+}
 //Determines which attack is triggered and applies it
 void ATP_SideScrollerCharacter::Attack()
 {
@@ -178,14 +188,21 @@ void ATP_SideScrollerCharacter::Attack()
 	//then allow weapon to start detecting collisions
 	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 	//Set attack state to end based on Attack Handle's determined Attack duration
-	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, AttackHandle->attackDuration, false);
+	GetWorld()->GetTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AttackHandle->attackDuration, false);
 	//determines what our attack does to the other player
 	AttackHandle->initializeAttack(State);
 }
 
 //Handles what happens when character is hit by an attack
-void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration)
+void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration, FVector force, float attackDirection)
 {
+	//position the character to the direction of the attack
+	float knockupOffset = 1;
+	if (attackDirection < 1) {
+		SetActorRotation(FRotator(0, 0, 0));
+		knockupOffset = -1;
+	}
+	else SetActorRotation(FRotator(0, 180, 0));
 	UGameplayStatics::PlaySound2D(this, AnimInst->HitSound);
 	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
 	Stats->hp -= dmg;
@@ -195,7 +212,10 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
 	}
 	else if (State == Knockup) {
-		LaunchCharacter(FVector(0.f, AttackHandle->KnockupY, AttackHandle->KnockupZ), true, true);
+		force.Y = force.Y *knockupOffset;
+		LaunchCharacter(force,true,true);
+		UE_LOG(LogTemp, Warning, TEXT("knockup Y %f"), force.Y );
+		UE_LOG(LogTemp, Warning, TEXT("knockup Z %f"), force.Z);
 	}
 	//Disables input on other player until the stun from the attack is over
 	DisableInput(ourPlayer);
@@ -203,9 +223,11 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 
 }
 
+
 void ATP_SideScrollerCharacter::checkIdle()
 {
 	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerRemaining(StunHandle) <= 0.f &&
+		GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <= 0.f &&
 		GetCharacterMovement()->IsFalling() == false && State != Knockup)//GetCharacterMovement()->Velocity.Y == 0)
 		State = Idle;
 }
@@ -224,7 +246,7 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 {
 
 	//can move if you aren't mid move
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && Value != 0)
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <=0.f &&GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && Value != 0)
 	{
 		float curr = GetWorld()->GetRealTimeSeconds();
 
@@ -259,15 +281,15 @@ void ATP_SideScrollerCharacter::handleRight(float timePressed)
 			UE_LOG(LogTemp, Warning, TEXT("Dash "));
 		}
 		//if currently facing left then turn it right
-		else if (GetActorRotation().Yaw < 1) {
-			GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
-			GetCharacterMovement()->StopMovementImmediately();
-			LaunchCharacter(FVector(0.f, -dashForce, 0.f), true, false);
-			GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
-			prevDash = timePressed;
-			State = Dashing;
-			UE_LOG(LogTemp, Warning, TEXT("Reverse Dash "));
-		}
+		//else if (GetActorRotation().Yaw < 1) {
+		//	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+		//	GetCharacterMovement()->StopMovementImmediately();
+		//	LaunchCharacter(FVector(0.f, -dashForce, 0.f), true, false);
+		//	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
+		//	prevDash = timePressed;
+		//	State = Dashing;
+		//	UE_LOG(LogTemp, Warning, TEXT("Reverse Dash "));
+		//}
 	}
 	prevRight = timePressed;
 }
@@ -287,14 +309,14 @@ void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 				State = Dashing;
 			}
 			//allows opp direction dashes without cooldown
-			else if (GetActorRotation().Yaw > 1 ) {
+			/*else if (GetActorRotation().Yaw > 1 ) {
 				GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
 				GetCharacterMovement()->StopMovementImmediately();
 				LaunchCharacter(FVector(0.f, -dashForce, 0.f), true, false);
 				GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, dashDuration, false);
 				prevDash = timePressed;
 				State = Dashing;
-			}
+			}*/
 		}
 
 

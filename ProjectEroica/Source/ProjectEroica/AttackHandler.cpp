@@ -29,15 +29,15 @@ void UAttackHandler::initializeAttack(FString attackName)
 	else if (attackName == "DashAttack") {
 		dmg = 20;
 		hitType = "Knockup";
-		KnockupY = DashAttackY;
-		KnockupZ = DashAttackZ;
+		KnockupForce.Y= DashAttackY;
+		KnockupForce.Z = DashAttackZ;
 		attackDuration = .5;
 	}
 	else if (attackName == "JumpAttack") {
 		dmg = 5;
 		stunDuration = 1;
 		hitType = "Stunned";
-		attackDuration = .21;
+		attackDuration = .3;
 	}
 }
 
