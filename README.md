@@ -34,7 +34,7 @@ AI Activation:
 The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
 
 Youtube Link:
-https://www.youtube.com/watch?v=SqbcTZX1K7I&feature=youtu.be
+https://www.youtube.com/watch?v=QKP8xhoARwE&app=desktop
 
 Gitter:
 Private Community:
