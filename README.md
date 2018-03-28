@@ -9,13 +9,20 @@ https://drive.google.com/open?id=1Ei3BZQcXsr9uNLbwt09PlJk3P34tAClF
 
 Game Moves:
 
-Attack Skill: If your MP bar is at least 1/5 full you can MP Skill
+Ground Attack: If you press Z while in idle you do a spinning ground attack that stuns your opponent
 
 Dash: Double tap left or right
 
+Dash Attack: If you press Z while dashing you do a Dash Attack that launches your enemy into the air with an upward strike.
+
 Jump: Press up
 
+Jump Attack: If you press Z while jumping, you can do short but quick jabs in the air
+
 Walk: Press/Hold left or right
+
+AI Activation:
+The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
 
 Youtube Link:
 https://www.youtube.com/watch?v=SqbcTZX1K7I&feature=youtu.be
