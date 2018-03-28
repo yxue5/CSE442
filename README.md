@@ -7,7 +7,16 @@ https://drive.google.com/open?id=1oMwUY5UFpjM3et09Jr7d-PM2WczZpex0
 4) If Windows prompts you about security risks, then click more options on the bottom and choose run anyways
 5) You can exit the game by alt tabbing and closing out the window.
 
-Game Moves:
+ADDITIONAL FOLDERS FOR DEVELOPERS TO USE:
+Art Assets:
+https://drive.google.com/open?id=1q1DhQQhDY0DEBBMZV1YEKMOoLsO1YHi5
+This folder belongs under the Content Folder
+
+Map Assets
+https://drive.google.com/open?id=1_6uQIdRjhcEKIU8YQ-UZjwDeA9F9EZ5g
+This folder belongs under the Content Folder as well
+
+GAME MOVES:
 
 Ground Attack: If you press Z while in idle you do a spinning ground attack that stuns your opponent
 
