@@ -1,12 +1,70 @@
-Meeting date and time
+Date:2/13/2018
+Time: 4 p.m. - 5 p.m.
 
-Meeting attendance. Any team member who are missing must be marked as either "unexcused absence" or "excused absence" along with a valid reason for the absence 
-with notification to the team more than 24 hours prior to the meeting
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
 
-Brief summary of the meeting discussion
+Summary: 
+We setup the GitHub branches today. Yang uploaded all of the previous work to the Github Develop branch. Besides, Yang briefly talked about the main idea about the game that we going to create and show us the basic tool in Unreal. Yang is in charge of character logic, Jie is in charge of animation programming and Xinyu is in charge of material programming. 
+Before the next meeting, each team member should find some tutorial by themselves to have some general thought about their job.
 
-List explicitly and in detail what each individual team member accomplished since the last meeting
 
-List explicitly and in detail what each individual team member will accomplish before the next meeting. 
 
-All team members must have at least 1 task listed here and each task must have a GitHub issue associated with it in the project repository
+
+Date: 2/21/2018
+Time: 3:30 - 4:30
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Yang was programmed character movement, the platform collations and the character animation. Solved the issue 2 that submitted last week.
+Jie was programming the HP and MP bar but not finished.
+Xinyu was programming the materials and not finished.
+
+We submit the issue 3:Basic Movement Animations on Github. Before the next meeting, Jie and Xinyu continue to work on HP and MP bar and should finished it by friday. Yang continues the character movement animation. We need to record the protocol video by friday 2/13/2018.
+
+
+
+Date: 2/27/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week we publish the v0.1.0 release on Github.
+During the meeting, Yang explain about the FK/IK and give us all the art assets that we need.
+For the next week, Jie is going to do the FK/IK animation. Xinyu is going to make the ship viable map. Make the platform rotate if possible. Yang is going to add the collision when the character hit each other, add the demage if possible.
+
+Date: 3/6/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Xinyu has worked on the game map and tried to fix the centering problem. Jie has worked on the FK/IK animation and tried to solve the walk animation problem. Yang has finished add the weapon.
+Yang is going to fix the damage and collison. Jie and Xinyu continue to fix the problem.
+
+
+
+Date: 3/13/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summery:
+Last week, Xinyu has worked on the game map and made the gear and gearboard rotate, but has the problem with the rotate direction of gearboard. Jie has worked on the FK/IK animation and have problem with finding the right class for IK animated pawn class. Yang was still work on damage.
+Before the next meeting, Jie should finish the FK/IK animation and Xinyu should add the material on the ship and fix the problem. Yang is going to fix the damage for collision problem.
