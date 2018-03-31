@@ -6,20 +6,31 @@
 #include "Animation/AnimInstance.h"
 #include "AnimInstanceKisa.generated.h"
 
-/**
- * 
- */
+class ATP_SideScrollerCharacter;
 UCLASS()
 class PROJECTEROICA_API UAnimInstanceKisa : public UAnimInstance
 {
 	GENERATED_BODY()
-	
 public:
+	float dustDuration = 0.5f;
+	void endParticleEffect();
+	UAnimInstanceKisa();
+	UPROPERTY()
+	//stores activ dust particles
+	TArray<UParticleSystemComponent*> activeDustParticles;
+	UPROPERTY()
+		ATP_SideScrollerCharacter* owningChar;
+	//Handles aesthetics for each state
 	UFUNCTION()
 		void HandleState(FString newState);
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FString State = "Idle";	
 
+	//Particle Systems
+	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+		UParticleSystem* DustParticle;
+	
+	//Sounds
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* DashSound;
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")

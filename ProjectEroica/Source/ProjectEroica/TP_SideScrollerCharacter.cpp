@@ -16,6 +16,7 @@
 #include "AnimInstanceKisa.h"
 #include "CharacterStats.h"
 #include "AttackHandler.h"
+#include "AnimInstanceKisa.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
@@ -89,7 +90,6 @@ void ATP_SideScrollerCharacter::BeginPlay()
 	{
 		ourPlayer = GetWorld()->GetFirstPlayerController();
 	}
-	//AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
 	//spawn and attach weapon
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -99,7 +99,9 @@ void ATP_SideScrollerCharacter::BeginPlay()
 		CharWeapon->wepOwner = this;
 		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
 	}
+	//Sets up connections to Animation Instance
 	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
+	AnimInst->owningChar = this;
 }
 
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
