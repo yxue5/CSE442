@@ -35,13 +35,18 @@ protected:
 
 	FString Idle = "Idle";
 	FString Walking = "Walking";
+	FString Running = "Running";
 	FString Dashing = "Dash";
 	FString Jumping = "Jump";
 	FString Attacking = "Attack";
 	FString Stunned = "Stunned";
 	FString Knockup = "Knockup";
 	FString OnGround = "OnGround";
-	FString BaseCombo1 = "BaseCombo1";
+	FString Combo1 = "Combo1";
+	FString Combo2 = "Combo2";
+	FString Combo3 = "Combo3";
+	FString Combo4 = "Combo4";
+	FString Combo5 = "Combo5";
 	FString Land = "Land";
 
 	//sets char back to idle when appropriate
@@ -76,8 +81,6 @@ protected:
 	virtual void BeginPlay() override;
 	void Jump() override;
 	// End of APawn interface
-
-
 
 public:
 	
