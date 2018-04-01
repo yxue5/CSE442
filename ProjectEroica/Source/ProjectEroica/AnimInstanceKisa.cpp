@@ -7,15 +7,15 @@
 #include "TP_SideScrollerCharacter.h"
 #include "TimerManager.h" 
 
+UAnimInstanceKisa::UAnimInstanceKisa()
+{
+	DustParticle = CreateDefaultSubobject<UParticleSystem>(TEXT("DustParticle"));
+}
+
 void UAnimInstanceKisa::endParticleEffect()
 {
 	UParticleSystemComponent* p = activeDustParticles.Pop();
 	p->DestroyComponent();
-}
-
-UAnimInstanceKisa::UAnimInstanceKisa()
-{
-	DustParticle = CreateDefaultSubobject<UParticleSystem>(TEXT("DustParticle"));
 }
 
 
@@ -37,8 +37,8 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 			FTimerHandle temp = FTimerHandle();
 			GetWorld()->GetTimerManager().SetTimer(temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
 		}
-		else if (newState == "BaseCombo1") {
-			UGameplayStatics::PlaySound2D(this, BaseCombo1);
+		else if (newState == "Combo1") {
+			UGameplayStatics::PlaySound2D(this, Combo1);
 		}
 		else if (newState == "DashAttack") {
 			UGameplayStatics::PlaySound2D(this, DashAttackSound);
@@ -46,6 +46,10 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 		else if (newState == "JumpAttack") {
 			UGameplayStatics::PlaySound2D(this, JumpAttackSound);
 		}
+		FString path = "AnimSequence'/Game/Art_Assets/Animations/" + newState + "." + newState + "'";
+		ourAnimation = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL, *path));
+		State = newState;
+		playOurAnimation();
 	}
-	State = newState;
 }
+

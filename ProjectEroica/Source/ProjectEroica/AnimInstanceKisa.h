@@ -30,6 +30,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Particles")
 		UParticleSystem* DustParticle;
 	
+	UAnimationAsset* BaseCombo1;
 	//Sounds
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* DashSound;
@@ -42,7 +43,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* JumpAttackSound;
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-		USoundBase* BaseCombo1;
+		USoundBase* Combo1;
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* PainSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animations")
+	UAnimSequence* ourAnimation = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL, TEXT("AnimSequence'/Game/Art_Assets/Animations/Idle.Idle'")));
+
+	//plays the actual animation
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+		void playOurAnimation();
 };
