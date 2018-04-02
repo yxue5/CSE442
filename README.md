@@ -62,6 +62,8 @@ Jump Attack
 
 User interface with hp bar, mp bar, and damage display  
 Character Skills that cost MP to activate  
+Characters lose HP when hit  
+Characters die when their HP goes to 0  
 AI that can follow and fight the player (no platform navigation though)  
 
 Sound Effects:  
@@ -70,20 +72,21 @@ Landing
 Attacking  
 Getting Hit  
 
-Particle Effects:
-Dashing/Landing
-Being Hit
+Particle Effects:  
+Dashing  
+Landing  
 
 ### Additional Functionality:
  
 1)Advanced Moves:  
-  Rocket Step: a dash diagonally upwards triggered by >(>^) or <(<^) 
-  Shadow Step: diagonally dashing uppding and down by pressing (>^)(V>) or (<^)(<V) per shadow step
-	Jump Stab: quickly stabbing diagonally downards douring a jump, triggered by pressing down and Z simultaneously mid jump.
+  Rocket Step: a dash diagonally upwards triggered by >(>^) or <(<^)  
+  Shadow Step: diagonally dashing uppding and down by pressing (>^)(V>) or (<^)(<V) per shadow step  
+	Jump Stab: quickly stabbing diagonally downards douring a jump, triggered by pressing down and Z simultaneously mid jump.  
 2) Multiplayer <-- One man can only do so much :(  
-3) AI that can navigate platforms  
-4) AI that can perform multiple attacks  
+3) AI that can navigate platforms    
+4) AI that can perform multiple attacks   
 5) Background Music  
+6) Particle effect when you're hit  
 
 ## User Story:
 I want to play the spiritual successor to Grand Chase's fast pace pvp game. This will be a 2d fighting game with 3d models in which a player is pitted against another player(which will be controlled by AI for now but if we can make it another person in the future via multiplayer we will try to do that). Each player has an automatically regenerating hp and mp bar. The player will use the arrow keys to move around, and the Z key to attack. Players can combine arrow key inputs and the Z key to create different moves.
