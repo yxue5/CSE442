@@ -68,3 +68,30 @@ Jin Lin
 Summery:
 Last week, Xinyu has worked on the game map and made the gear and gearboard rotate, but has the problem with the rotate direction of gearboard. Jie has worked on the FK/IK animation and have problem with finding the right class for IK animated pawn class. Yang was still work on damage.
 Before the next meeting, Jie should finish the FK/IK animation and Xinyu should add the material on the ship and fix the problem. Yang is going to fix the damage for collision problem.
+
+
+
+Date: 3/27/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Jie complete the FK/IK animation and Xinyu complete the ShipMap animation and material, Yang add damage UI, animation sound and dash animation.
+This week, we need to submit the Alpha Release by Wednesday and Xinyu and Jie need to finished writing the project document,Yang need to finish the AI part.
+
+
+Date: 4/3/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Jie was assigned to fix the main menu problem where main menu game mode can not commect with BP_EroicaGameMode. Xinyu was assigned to fix the passable gearboard which is to make gearboard both passable and not push back the character.The GearBoard can rotate now, but the character could stay on the board while the board rotate down. Yang programmed the AI to make AI was able to follow the player and hit the player while AI come close enough to the player.
+This Week, Jie and Xinyu should fix the bug by Wednesday. Yang is going to fix the AI to hit the character no matter where it is and implement the dead state while character's HP hits to 0.
