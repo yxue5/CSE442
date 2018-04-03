@@ -90,21 +90,3 @@ Landing
 
 ## User Story:
 I want to play the spiritual successor to Grand Chase's fast pace pvp game. This will be a 2d fighting game with 3d models in which a player is pitted against another player(which will be controlled by AI for now but if we can make it another person in the future via multiplayer we will try to do that). Each player has an automatically regenerating hp and mp bar. The player will use the arrow keys to move around, and the Z key to attack. Players can combine arrow key inputs and the Z key to create different moves.
-
-## Team Roles:
-### Yang:
-programming Character Logic such as Character Attacks, reactions to attacks, movement, sounds, and AI. Basically I'm tasked withed bringing the character to life.
-
-### Jie:
-programming User Interfaces such as main menu.
-
-### Xinyu:
-Adding materials and programming maps for the game to run in.
-
-## Code Reviews:
-
-All Class/Component directly connected to the Character class such as Attacks, Weapons or Stats: Yang Xue
-
-All User Interface Code: Jie Lin
-
-All Map/Platform Code: Xinyu Chen
