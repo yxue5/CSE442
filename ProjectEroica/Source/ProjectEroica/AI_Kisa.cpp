@@ -56,31 +56,39 @@ void AAI_Kisa::Scout()
 		//float currRotation = GetActorRotation().Yaw;
 		//move if you see pawn and aren't currently attacking
 		if (justSawPawn == true) {
-			// we have to move closer
-			//decide which way to move
-			if (currRotation > 1) {
-				if (currTime - AIprevDash > dashCoolDown) {
-					Dash(1);
+			//if we're within striking distance
+			if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 100) {
+				currTime = GetWorld()->GetRealTimeSeconds();
+				if (currTime - prevAttack > AttackCoolDown) {
+					UE_LOG(LogTemp, Warning, TEXT("UPDATE!"));
+					State = Idle;
+					Attack();
+					prevAttack = currTime;
 				}
-				else MoveRight(-1);
 			}
+			// else we have to move closer
 			else {
-				if (currTime -AIprevDash > dashCoolDown) {
-					Dash(-1);
+				//slow down dash if we're close to Pawn
+				if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 300) {
+					dashForce = 750;
 				}
-				MoveRight(1);
+				else dashForce = 1500;
+				//decide which way to move
+				if (currRotation > 1) {
+					if (currTime - AIprevDash > dashCoolDown) {
+						Dash(1);
+					}
+					else MoveRight(-1);
+				}
+				else {
+					if (currTime - AIprevDash > dashCoolDown) {
+						Dash(-1);
+					}
+					MoveRight(1);
+				}
 			}
 		}
-		//if we're within striking distance
-		if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 100) {
-			currTime = GetWorld()->GetRealTimeSeconds();
-			if (currTime - prevAttack > AttackCoolDown) {
-				UE_LOG(LogTemp, Warning, TEXT("UPDATE!"));
-				State = Idle;
-				Attack();
-				prevAttack = currTime;
-			}
-		}
+
 	}
 	GetWorld()->GetTimerManager().SetTimer(ScoutHandle, this, &AAI_Kisa::Scout, 1.0f, false);
 }

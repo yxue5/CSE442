@@ -33,7 +33,9 @@ public:
 		float dmg = 0;
 	UPROPERTY(EditDefaultsOnly)
 		FVector KnockupForce = FVector(0, 0, 0);
-
+	//how many times this attack has already hit an enemy
+	UPROPERTY()
+		float hitCounter = 0;
 	UPROPERTY(EditDefaultsOnly)
 		float DashAttackY = 200;
 	UPROPERTY(EditDefaultsOnly)

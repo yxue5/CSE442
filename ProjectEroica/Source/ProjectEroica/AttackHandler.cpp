@@ -20,6 +20,8 @@ void UAttackHandler::BeginPlay()
 
 void UAttackHandler::initializeAttack(FString attackName)
 {
+	//reset hit counter
+	hitCounter = 0;
 	if (attackName == "Combo1") {
 		stunDuration = .7;
 		dmg = 15;
