@@ -28,10 +28,6 @@ AWeapon::AWeapon()
 void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, 
 	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	//dont preceed with this function if we've already hit with this attack
-	if (wepOwner->AttackHandle->hitCounter == 1) {
-		return;
-	}
 	UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped actor!"));
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
 	AAI_Kisa* validEnemy = Cast<AAI_Kisa>(OtherActor);

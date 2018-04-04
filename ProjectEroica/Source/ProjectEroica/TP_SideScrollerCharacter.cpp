@@ -205,7 +205,6 @@ void ATP_SideScrollerCharacter::Attack()
 	AttackHandle->initializeAttack(State);
 	//Update the Animation we're playing
 	handleAnimation();
-	//Length of attack is equal to the length of the animation
 	AttackHandle->attackDuration = AnimInst->ourAnimation->GetPlayLength();
 	//Set attack state to end based on Attack Handle's determined Attack duration
 	GetWorld()->GetTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AttackHandle->attackDuration, false);

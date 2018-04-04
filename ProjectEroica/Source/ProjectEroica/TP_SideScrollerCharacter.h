@@ -109,7 +109,7 @@ public:
 		float dashThreshold = .2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		float dashForce = 1500;
+		float dashForce = 2000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		float dashCoolDown = .4;
