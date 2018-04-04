@@ -48,6 +48,7 @@ protected:
 	FString Combo4 = "Combo4";
 	FString Combo5 = "Combo5";
 	FString Land = "Land";
+	FString Death = "Death";
 
 	//sets char back to idle when appropriate
 	UFUNCTION()

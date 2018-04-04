@@ -21,6 +21,7 @@
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
+	State = Idle;
 	// Don't rotate when the controller rotates.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -99,6 +100,7 @@ void ATP_SideScrollerCharacter::BeginPlay()
 		CharWeapon->wepOwner = this;
 		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
 	}
+	State = Idle;
 	//Sets up connections to Animation Instance
 	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
 	AnimInst->owningChar = this;
@@ -215,22 +217,28 @@ void ATP_SideScrollerCharacter::Attack()
 void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration, FVector force, float attackDirection)
 {
 	//position the character to the direction of the attack
-	float knockupOffset = 1;
+	float knockupDirection = 1;
 	if (attackDirection < 1) {
 		SetActorRotation(FRotator(0, 0, 0));
-		knockupOffset = -1;
+		knockupDirection = -1;
 	}
 	else SetActorRotation(FRotator(0, 180, 0));
 	UGameplayStatics::PlaySound2D(this, AnimInst->HitSound);
 	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
 	Stats->hp -= dmg;
 	State = stunType;
-
+	//if we're dead then disbale input
+	if (Stats->hp <= 0) {
+		//State = Death;
+		//PrimaryActorTick.bCanEverTick = false;
+		//DisableInput(ourPlayer);
+		//UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+	}
 	if (State == Stunned) {
 		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
 	}
 	else if (State == Knockup) {
-		force.Y = force.Y *knockupOffset;
+		force.Y = force.Y *knockupDirection;
 		LaunchCharacter(force,true,true);
 //UE_LOG(LogTemp, Warning, TEXT("knockup Y %f"), force.Y );
 		//UE_LOG(LogTemp, Warning, TEXT("knockup Z %f"), force.Z);

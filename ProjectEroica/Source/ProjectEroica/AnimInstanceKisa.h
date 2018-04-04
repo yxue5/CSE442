@@ -48,7 +48,7 @@ public:
 		USoundBase* PainSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animations")
-	UAnimSequence* ourAnimation = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL, TEXT("AnimSequence'/Game/Art_Assets/Animations/Idle.Idle'")));
+	UAnimSequence* ourAnimation = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL, TEXT("AnimSequence'/Game/Art_Assets/Animations/Idle.Idle'/")));
 
 	//plays the actual animation
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
