@@ -16,10 +16,12 @@
 #include "AnimInstanceKisa.h"
 #include "CharacterStats.h"
 #include "AttackHandler.h"
+#include "AnimInstanceKisa.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 {
+	State = Idle;
 	// Don't rotate when the controller rotates.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -53,8 +55,8 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	GetCharacterMovement()->AirControl = 0.80f;
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
 	GetCharacterMovement()->GroundFriction = 0.f;
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	GetCharacterMovement()->MaxFlySpeed = 600.f;
+	GetCharacterMovement()->MaxWalkSpeed = 200.f;
+	GetCharacterMovement()->MaxFlySpeed = 400.f;
 
 	//Sets this capsule collision type to Pawn
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -89,7 +91,6 @@ void ATP_SideScrollerCharacter::BeginPlay()
 	{
 		ourPlayer = GetWorld()->GetFirstPlayerController();
 	}
-	//AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
 	//spawn and attach weapon
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -99,7 +100,11 @@ void ATP_SideScrollerCharacter::BeginPlay()
 		CharWeapon->wepOwner = this;
 		CharWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponSocket"));
 	}
+	State = Idle;
+	//Sets up connections to Animation Instance
 	AnimInst = Cast<UAnimInstanceKisa>(GetMesh()->GetAnimInstance());
+	AnimInst->owningChar = this;
+	AnimInst->playOurAnimation();
 }
 
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
@@ -125,9 +130,12 @@ AWeapon * ATP_SideScrollerCharacter::getWep()
 }
 void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
-	//return to idle when you land on a plat
+	//return to idle and end movement when you land on a plat
 	if (State == Jumping || State == Knockup) {
 		State = Land;
+		FTimerDelegate endMovementDelegate;
+		endMovementDelegate.BindUFunction(this, FName("stopMovement"));
+		GetWorld()->GetTimerManager().SetTimerForNextTick(endMovementDelegate);
 	}
 }
 FString ATP_SideScrollerCharacter::getState()
@@ -147,11 +155,19 @@ void ATP_SideScrollerCharacter::setState(FString state)
 
 void ATP_SideScrollerCharacter::stopMovement()
 {
-	GetCharacterMovement()->StopMovementImmediately();
-	if (GetCharacterMovement()->IsFalling()) {
-		State = Jumping;
+	//if state was previously dashing but we are still holding down the keys then state is now running
+	if (GetInputAxisValue(TEXT("MoveRight")) != 0 && State == Dashing) {
+		GetCharacterMovement()->StopMovementKeepPathing();
+		State = Running;
 	}
-	else State = Idle;
+	//else we are ending a dash
+	else {
+		GetCharacterMovement()->StopMovementImmediately();
+		if (GetCharacterMovement()->IsFalling()) {
+			State = Jumping;
+		}
+		else State = Idle;
+	}
 }
 
 void ATP_SideScrollerCharacter::Dash(float Direction)
@@ -187,35 +203,45 @@ void ATP_SideScrollerCharacter::Attack()
 	State = AttackHandle->DetermineAttack(State);
 	//then allow weapon to start detecting collisions
 	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-	//Set attack state to end based on Attack Handle's determined Attack duration
-	GetWorld()->GetTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AttackHandle->attackDuration, false);
 	//determines what our attack does to the other player
 	AttackHandle->initializeAttack(State);
+	//Update the Animation we're playing
+	handleAnimation();
+	//Length of attack is equal to the length of the animation
+	AttackHandle->attackDuration = AnimInst->ourAnimation->GetPlayLength();
+	//Set attack state to end based on Attack Handle's determined Attack duration
+	GetWorld()->GetTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AttackHandle->attackDuration, false);
 }
 
 //Handles what happens when character is hit by an attack
 void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float stunDuration, FVector force, float attackDirection)
 {
 	//position the character to the direction of the attack
-	float knockupOffset = 1;
+	float knockupDirection = 1;
 	if (attackDirection < 1) {
 		SetActorRotation(FRotator(0, 0, 0));
-		knockupOffset = -1;
+		knockupDirection = -1;
 	}
 	else SetActorRotation(FRotator(0, 180, 0));
 	UGameplayStatics::PlaySound2D(this, AnimInst->HitSound);
 	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
 	Stats->hp -= dmg;
 	State = stunType;
-
+	//if we're dead then disbale input
+	if (Stats->hp <= 0) {
+		//State = Death;
+		//PrimaryActorTick.bCanEverTick = false;
+		//DisableInput(ourPlayer);
+		//UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+	}
 	if (State == Stunned) {
 		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
 	}
 	else if (State == Knockup) {
-		force.Y = force.Y *knockupOffset;
+		force.Y = force.Y *knockupDirection;
 		LaunchCharacter(force,true,true);
-		UE_LOG(LogTemp, Warning, TEXT("knockup Y %f"), force.Y );
-		UE_LOG(LogTemp, Warning, TEXT("knockup Z %f"), force.Z);
+//UE_LOG(LogTemp, Warning, TEXT("knockup Y %f"), force.Y );
+		//UE_LOG(LogTemp, Warning, TEXT("knockup Z %f"), force.Z);
 	}
 	//Disables input on other player until the stun from the attack is over
 	DisableInput(ourPlayer);
@@ -227,9 +253,12 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 void ATP_SideScrollerCharacter::checkIdle()
 {
 	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerRemaining(StunHandle) <= 0.f &&
-		GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <= 0.f &&
-		GetCharacterMovement()->IsFalling() == false && State != Knockup)//GetCharacterMovement()->Velocity.Y == 0)
+		GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <= 0.f &&		
+		GetCharacterMovement()->IsFalling() == false && GetInputAxisValue(TEXT("MoveRight"))==0) {
+		UE_LOG(LogTemp, Warning, TEXT("Idle Triggered!"));
 		State = Idle;
+	}
+		
 }
 void ATP_SideScrollerCharacter::Jump()
 {
@@ -244,12 +273,16 @@ void ATP_SideScrollerCharacter::Jump()
 
 void ATP_SideScrollerCharacter::MoveRight(float Value)
 {
-
+	//if we can run
+	if (State == Running) {
+		State = Running;
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+	}
 	//can move if you aren't mid move
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <=0.f &&GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && Value != 0)
+	else if (GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <=0.f &&GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && Value != 0)
 	{
 		float curr = GetWorld()->GetRealTimeSeconds();
-
+		GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 		if (ourPlayer->WasInputKeyJustPressed(FKey("Left"))) {
 			handleRight(curr);
 			UE_LOG(LogTemp, Warning, TEXT("Left pressed: %f"), curr);
@@ -261,9 +294,9 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 		if (State == Idle) {
 			State = Walking;
 		}
-		// add movement in that direction
-		AddMovementInput(FVector(0.f, -Value, 0.f));
 	}
+	// add movement in that direction
+	AddMovementInput(FVector(0.f, -Value, 0.f));
 
 }
 

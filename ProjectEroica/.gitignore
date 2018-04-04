@@ -85,3 +85,6 @@ Content/Sounds/*
 
 #Map Assets
 Content/Map_Assets/*
+
+#Particle Effects
+Content/InfinityBladeEffects/*
