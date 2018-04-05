@@ -1,7 +1,7 @@
 # CSE442
 ## INSTRUCTIONS TO PLAY GAME:
 1) Download from the following Link:
-https://drive.google.com/open?id=116Y4Y6YH9e345O3MynfjEXZ78ly3isHa
+https://drive.google.com/open?id=1wgPgBVGpUsDvFQqWojEYCzTnjX5FsBTX
 2) Unzip the file
 3) Click on the WindowsNoEditor folder and if there's another WindowsNoEditor folder inside of it then click on that too. Then click the ProjectEroica.Exe file to run the game
 4) If Windows prompts you about security risks, then click more options on the bottom and choose run anyways
