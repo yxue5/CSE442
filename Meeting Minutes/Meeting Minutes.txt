@@ -95,3 +95,16 @@ Jin Lin
 Summary:
 Last week, Jie was assigned to fix the main menu problem where main menu game mode can not commect with BP_EroicaGameMode. Xinyu was assigned to fix the passable gearboard which is to make gearboard both passable and not push back the character.The GearBoard can rotate now, but the character could stay on the board while the board rotate down. Yang programmed the AI to make AI was able to follow the player and hit the player while AI come close enough to the player.
 This Week, Jie and Xinyu should fix the bug by Wednesday. Yang is going to fix the AI to hit the character no matter where it is and implement the dead state while character's HP hits to 0.
+
+
+Date: 4/10/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last Week, Xinyu was finxed the passable gearboard and create a new CaveMap, Jie finished the main menu and Yang finished add the death state the character skills.
+This week, Jie is going to do the landing page and pause menu. Yang is going to add the character skill attack and the animation for the skills. Xinyu is going to add some animation on the CaveMap.
