@@ -24,7 +24,9 @@ public:
 	UFUNCTION()
 	void initializeAttack(FString attackName);
 	UFUNCTION()
-	FString DetermineAttack(FString currState);
+	FString DetermineAttack(FString currState, float currTime);
+	UPROPERTY(VisibleAnywhere)
+		float prevAttack = 0;
 	UPROPERTY(VisibleAnywhere)
 		float attackDuration = 0;
 	UPROPERTY(VisibleAnywhere)

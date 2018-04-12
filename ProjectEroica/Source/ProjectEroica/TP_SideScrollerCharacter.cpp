@@ -72,6 +72,12 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void ATP_SideScrollerCharacter::Die()
+{
+	CharWeapon->Destroy();
+	Destroy();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -79,6 +85,7 @@ void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent*
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ATP_SideScrollerCharacter::Attack);
+	PlayerInputComponent->BindAction("Skill1", IE_Pressed, this, &ATP_SideScrollerCharacter::Skill1);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_SideScrollerCharacter::MoveRight);
 	ourPlayer = GetWorld()->GetFirstPlayerController();
@@ -131,11 +138,17 @@ AWeapon * ATP_SideScrollerCharacter::getWep()
 void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	//return to idle and end movement when you land on a plat
-	if (State == Jumping || State == Knockup) {
+	if (State == Jumping) {
 		State = Land;
 		FTimerDelegate endMovementDelegate;
 		endMovementDelegate.BindUFunction(this, FName("stopMovement"));
 		GetWorld()->GetTimerManager().SetTimerForNextTick(endMovementDelegate);
+	}
+	//goes to knockdown animation and 
+	else if (State == Knockup) {
+		State = Knockdown;
+		handleAnimation();
+		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, AnimInst->ourAnimation->GetPlayLength(), false);
 	}
 }
 FString ATP_SideScrollerCharacter::getState()
@@ -200,7 +213,7 @@ void ATP_SideScrollerCharacter::Attack()
 	//clears this handle so our state doesnt get reset to idle by a previous stop movement timer after our move is triggered
 	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
 	//first determine what attack will trigger based on current state
-	State = AttackHandle->DetermineAttack(State);
+	State = AttackHandle->DetermineAttack(State, GetWorld()->GetRealTimeSeconds());
 	//then allow weapon to start detecting collisions
 	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 	//determines what our attack does to the other player
@@ -227,19 +240,22 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
 	Stats->hp -= dmg;
 	State = stunType;
-	//if we're dead then disbale input
+	//if we're dead then disable input
 	if (Stats->hp <= 0) {
-		//State = Death;
-		//PrimaryActorTick.bCanEverTick = false;
-		//DisableInput(ourPlayer);
-		//UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+		State = Death;
+		PrimaryActorTick.bCanEverTick = false;
+		DisableInput(ourPlayer);
+		UE_LOG(LogTemp, Warning, TEXT("Dead!"));
+		handleAnimation();
+		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::Die, AnimInst->ourAnimation->GetPlayLength(), false);
 	}
-	if (State == Stunned) {
+	else if (State == Stunned) {
 		GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, stunDuration, false);
 	}
 	else if (State == Knockup) {
 		force.Y = force.Y *knockupDirection;
 		LaunchCharacter(force,true,true);
+		DisableInput(ourPlayer);
 //UE_LOG(LogTemp, Warning, TEXT("knockup Y %f"), force.Y );
 		//UE_LOG(LogTemp, Warning, TEXT("knockup Z %f"), force.Z);
 	}
@@ -260,15 +276,37 @@ void ATP_SideScrollerCharacter::checkIdle()
 	}
 		
 }
+void ATP_SideScrollerCharacter::Skill1()
+{
+	if (Stats->mp >= 10) {
+		GetWorldTimerManager().ClearTimer(EndMovementHandle);
+		GetWorldTimerManager().ClearTimer(AttackingHandle);
+		GetCharacterMovement()->StopMovementImmediately();
+		State = SkillOne;
+		Stats->mp -= 10;
+		//then allow weapon to start detecting collisions
+		CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+		//determines what our attack does to the other player
+		AttackHandle->initializeAttack(State);
+		//Update the Animation we're playing
+		handleAnimation();
+		//Length of attack is equal to the length of the animation
+		AttackHandle->attackDuration = AnimInst->ourAnimation->GetPlayLength();
+		//Set attack state to end based on Attack Handle's determined Attack duration
+		GetWorldTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AnimInst->ourAnimation->GetPlayLength(), false);
+	}
+}
 void ATP_SideScrollerCharacter::Jump()
 {
-	//cancels dash
-	GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
-	GetCharacterMovement()->StopActiveMovement();
-	GetCharacterMovement()->StopMovementImmediately();
-	//proceeds to jump
-	Super::Jump();
-	State = Jumping;
+	if (!GetMovementComponent()->IsFalling()) {
+		//cancels dash
+		GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+		GetCharacterMovement()->StopActiveMovement();
+		GetCharacterMovement()->StopMovementImmediately();
+		//proceeds to jump
+		Super::Jump();
+		State = Jumping;
+	}
 }
 
 void ATP_SideScrollerCharacter::MoveRight(float Value)
