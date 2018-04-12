@@ -46,6 +46,9 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 		else if (newState == "JumpAttack") {
 			UGameplayStatics::PlaySound2D(this, JumpAttackSound);
 		}
+		else if (newState == "Death") {
+			UGameplayStatics::PlaySound2D(this, DeathSound);
+		}
 		FString path = "AnimSequence'/Game/Art_Assets/Animations/" + newState + "." + newState + "'/";
 		ourAnimation = Cast<UAnimSequence>(StaticLoadObject(UAnimSequence::StaticClass(), NULL, *path));
 		State = newState;
