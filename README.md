@@ -1,25 +1,19 @@
 # CSE442
 ## INSTRUCTIONS TO PLAY GAME:
 1) Download from the following Link:
-https://drive.google.com/open?id=1wgPgBVGpUsDvFQqWojEYCzTnjX5FsBTX
+http://www.playeroica.com/?page_id=120
 2) Unzip the file
 3) Click on the WindowsNoEditor folder and if there's another WindowsNoEditor folder inside of it then click on that too. Then click the ProjectEroica.Exe file to run the game
 4) If Windows prompts you about security risks, then click more options on the bottom and choose run anyways
 5) You can exit the game by alt tabbing and closing out the window.
 
-## Additional folders for developers to install:
-If you are collaborating on this project you must install the following folders:
-Art Assets:
-https://drive.google.com/open?id=1q1DhQQhDY0DEBBMZV1YEKMOoLsO1YHi5
-This folder belongs under the Content Folder
-
-Map Assets
-https://drive.google.com/open?id=1_6uQIdRjhcEKIU8YQ-UZjwDeA9F9EZ5g
-This folder belongs under the Content Folder as well
-
 ## Game Instructions:
 
-Combo Attack: If you press Z you initiate a combo attack that you can chain by pressing Z at the end of each hit. This move is not yet fully implemented.
+When the game loads, you will be greeted with a main menu. Here you can read the instructions by clicking the instructions button. You can change the resolution of the game by clicking the options button and then selecting the preferred size. You can quit the game by pressing the quit button. Finally, you can jump into the action by pressing start game. Before the game starts, you get to choose between the Cave Map and the Ship Map.
+
+Combo Attack: If you press Z while idle, you initiate a combo attack that you can chain by pressing Z at the end of each hit. You can do this for a maximum of 5 hits.
+
+Character Skill: If you press A, you do a powerful stab attack that costs 30 mana.
 
 Dash: Double tap left or right
 
@@ -31,15 +25,24 @@ Jump Attack: If you press Z while jumping, you can do short but quick jabs in th
 
 Walk: Press/Hold left or right
 
-AI Activation:
-The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
+AI Activation: The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
 
 Youtube Link:
-https://www.youtube.com/watch?v=QKP8xhoARwE&app=desktop
+https://www.youtube.com/watch?v=suYD8Pv9jwg&feature=youtu.be
 
 Gitter:
 Private Community:
 [![Gitter](https://img.shields.io/gitter/room/DAVFoundation/DAV-Contributors.svg?style=flat-square)](https://gitter.im/442-Team-2/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+
+## Additional folders for developers to install:
+If you are collaborating on this project you must install the following folders:
+Art Assets:
+https://drive.google.com/open?id=1q1DhQQhDY0DEBBMZV1YEKMOoLsO1YHi5
+This folder belongs under the Content Folder
+
+Map Assets
+https://drive.google.com/open?id=1_6uQIdRjhcEKIU8YQ-UZjwDeA9F9EZ5g
+This folder belongs under the Content Folder as well
 
 ## Project Description:
 

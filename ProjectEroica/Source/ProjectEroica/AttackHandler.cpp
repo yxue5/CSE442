@@ -22,6 +22,11 @@ void UAttackHandler::initializeAttack(FString attackName)
 {
 	//reset hit counter
 	hitCounter = 0;
+	if (attackName == "SkillOne") {
+		stunDuration = 1.0;
+		dmg = 30;
+		hitType = "Stunned";
+	}
 	if (attackName == "Combo1") {
 		stunDuration = .7;
 		dmg = 15;
@@ -62,29 +67,37 @@ void UAttackHandler::initializeAttack(FString attackName)
 	}
 }
 
-FString UAttackHandler::DetermineAttack(FString currState)
+FString UAttackHandler::DetermineAttack(FString currState, float currTime)
 {
 	if (currState == "Dash" || currState == "Running") {
 		return "DashAttack";
 	}
 	else if (currState == "Idle" || currState == "Walking") {
+		prevAttack = currTime;
 		return "Combo1";
 	}
-	else if (currState == "Combo1") {
+	else if (currState == "Combo1" && FMath::Abs(currTime - (prevAttack + attackDuration)) < 0.4){
+		prevAttack = currTime;
 		return "Combo2";
 	}
-	else if (currState == "Combo2") {
+	else if (currState == "Combo2" && FMath::Abs(currTime - (prevAttack + attackDuration)) < 0.4){
+		prevAttack = currTime;
 		return "Combo3";
 	}
-	else if (currState == "Combo3") {
+	else if (currState == "Combo3" && FMath::Abs(currTime - (prevAttack + attackDuration)) < 0.4) {
+		prevAttack = currTime;
 		return "Combo4";
 	}
-	else if (currState == "Combo4") {
+	else if (currState == "Combo4" && FMath::Abs(currTime - (prevAttack + attackDuration)) < 0.4) {
+		prevAttack = currTime;
 		return "Combo5";
 	}
-	else if (currState == "Jump") {
+	//jump attack cooldown
+	else if (currState == "Jump" && FMath::Abs(currTime - prevAttack)  > 0.5) {
+		prevAttack = currTime;
 		return "JumpAttack";
 	}
+	
 	//Stay at current state if no options
 	else return currState;
 }

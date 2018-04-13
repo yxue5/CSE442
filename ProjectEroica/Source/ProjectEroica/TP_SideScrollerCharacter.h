@@ -41,6 +41,7 @@ protected:
 	FString Attacking = "Attack";
 	FString Stunned = "Stunned";
 	FString Knockup = "Knockup";
+	FString Knockdown = "Knockdown";
 	FString OnGround = "OnGround";
 	FString Combo1 = "Combo1";
 	FString Combo2 = "Combo2";
@@ -49,10 +50,15 @@ protected:
 	FString Combo5 = "Combo5";
 	FString Land = "Land";
 	FString Death = "Death";
+	FString SkillOne = "SkillOne";
 
 	//sets char back to idle when appropriate
 	UFUNCTION()
 	void checkIdle();
+
+	//Uses Skill 1
+	UFUNCTION()
+		void Skill1();
 
 	//stops dash from sliding
 	UFUNCTION()
@@ -86,6 +92,11 @@ protected:
 public:
 	
 	ATP_SideScrollerCharacter();
+	//lets game know player has died
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void endGame();
+	UFUNCTION(BlueprintCallable)
+		void Die();
 	UFUNCTION(BlueprintCallable)
 		FString getState();
 	UFUNCTION(BlueprintCallable)
