@@ -92,6 +92,9 @@ protected:
 public:
 	
 	ATP_SideScrollerCharacter();
+	//lets game know player has died
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void endGame();
 	UFUNCTION(BlueprintCallable)
 		void Die();
 	UFUNCTION(BlueprintCallable)
