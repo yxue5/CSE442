@@ -74,6 +74,7 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 
 void ATP_SideScrollerCharacter::Die()
 {
+	endGame();
 	CharWeapon->Destroy();
 	Destroy();
 }
@@ -202,12 +203,9 @@ void ATP_SideScrollerCharacter::stopAttack() {
 //Determines which attack is triggered and applies it
 void ATP_SideScrollerCharacter::Attack()
 {
-	//if (State == Idle && Stats->mp > 20) {
-	//	CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-	//	State = BaseCombo1;
-	//	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, 1.0f, false);
-	//	Stats->mp -= 20;
-	//}
+	if (State == Combo5) {
+		return;
+	}
 	//Zeroes out acceleration from previous movement
 	GetCharacterMovement()->StopMovementImmediately();
 	//clears this handle so our state doesnt get reset to idle by a previous stop movement timer after our move is triggered
