@@ -74,9 +74,9 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 
 void ATP_SideScrollerCharacter::Die()
 {
-	endGame();
 	CharWeapon->Destroy();
 	Destroy();
+	endGame();
 }
 
 //////////////////////////////////////////////////////////////////////////
