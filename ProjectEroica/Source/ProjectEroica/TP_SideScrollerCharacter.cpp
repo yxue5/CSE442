@@ -83,9 +83,9 @@ void ATP_SideScrollerCharacter::OnCharacterBeginOverlap(UPrimitiveComponent * Ov
 
 void ATP_SideScrollerCharacter::Die()
 {
-	endGame();
 	CharWeapon->Destroy();
 	Destroy();
+	endGame();
 }
 
 //////////////////////////////////////////////////////////////////////////
