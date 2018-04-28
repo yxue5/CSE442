@@ -90,5 +90,5 @@ void AAI_Kisa::Scout()
 		}
 
 	}
-	GetWorld()->GetTimerManager().SetTimer(ScoutHandle, this, &AAI_Kisa::Scout, 1.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(ScoutHandle, this, &AAI_Kisa::Scout, 0.3f, false);
 }

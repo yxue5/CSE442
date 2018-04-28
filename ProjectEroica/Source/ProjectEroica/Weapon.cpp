@@ -38,14 +38,7 @@ void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AA
 	if (validChar && validChar!= wepOwner) {
 		UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped player!"));
 		validChar->handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration,wepOwner->AttackHandle->KnockupForce,wepOwner->GetActorRotation().Yaw);
-	}
-	
-	//or if we hit enemy
-	else if (OtherActor->GetClass()->IsChildOf(ATP_SideScrollerCharacter::StaticClass())) {
-		if (validEnemy && validEnemy != wepOwner) {
-			UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped enemy!"));
-			validEnemy->Super::handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration, wepOwner->AttackHandle->KnockupForce, wepOwner->GetActorRotation().Yaw);
-		}	
+		wepOwner->AttackHandle->hitCounter++;
 	}
 }
 
