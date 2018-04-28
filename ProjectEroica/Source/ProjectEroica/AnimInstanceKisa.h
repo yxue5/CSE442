@@ -16,6 +16,8 @@ public:
 	float dustDuration = 0.3f;
 	void endParticleEffect();
 	UAnimInstanceKisa();
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
+		bool isLooping = true;
 	UPROPERTY()
 	//stores activ dust particles
 	TArray<UParticleSystemComponent*> activeDustParticles;

@@ -27,7 +27,7 @@ public:
 	void BeginPlay() override;
 	UFUNCTION()
 	void Scout();
-	float AttackCoolDown = 3.0f;
+	float AttackCoolDown = 1.0f;
 	float AIprevDash = 0;
 	float prevAttack = 0;
 

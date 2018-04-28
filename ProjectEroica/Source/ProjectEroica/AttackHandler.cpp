@@ -69,7 +69,7 @@ void UAttackHandler::initializeAttack(FString attackName)
 
 FString UAttackHandler::DetermineAttack(FString currState, float currTime)
 {
-	if (currState == "Dash" || currState == "Running") {
+	if (currState == "Dash" || currState == "Rocketing" || currState == "Flashing" || currState == "Running") {
 		return "DashAttack";
 	}
 	else if (currState == "Idle" || currState == "Walking") {
