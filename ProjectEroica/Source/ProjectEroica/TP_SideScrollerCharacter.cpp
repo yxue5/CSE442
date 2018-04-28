@@ -380,7 +380,7 @@ void ATP_SideScrollerCharacter::handleRight(float timePressed)
 {
 	rightPressed = true;
 	//checks rocket
-	if (timePressed - prevUp < simulThreshold && !GetCharacterMovement()->IsFalling()) {
+	if (timePressed - prevUp < simulThreshold) {
 		float timeTaken = timePressed - prevRight;
 		if (timeTaken < rocketThreshold) {
 			Rocket(-1, timeTaken);
@@ -401,7 +401,7 @@ void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 {
 	leftPressed = true;
 	//checks rocket
-	if (timePressed - prevUp < simulThreshold && !GetCharacterMovement()->IsFalling()) {
+	if (timePressed - prevUp < simulThreshold) {
 		float timeTaken = timePressed - prevLeft;
 		if (timeTaken < rocketThreshold) {
 			Rocket(1, timeTaken);
