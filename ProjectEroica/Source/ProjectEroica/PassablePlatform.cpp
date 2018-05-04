@@ -16,6 +16,7 @@ APassablePlatform::APassablePlatform()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	MeshComp->SetCollisionObjectType(ECollisionChannel::ECC_Vehicle);
 	RootComponent = MeshComp;
 
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
@@ -46,7 +47,8 @@ void APassablePlatform::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
 	ATP_SideScrollerCharacter* validChar = Cast<ATP_SideScrollerCharacter>(OtherActor);
 	if (validChar) {
-		MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		validChar->setCapsuleCollision(ECR_Overlap);
+		//MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 		UE_LOG(LogTemp, Warning, TEXT("Case LeavePlat"));
 		validChar->currPlat = nullptr;
 	}
@@ -61,13 +63,15 @@ void APassablePlatform::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedCompone
 	if (validChar) {
 		//if actor is just above plat then make plat solid
 		if (validChar->GetActorLocation().Z > MeshComp->GetComponentLocation().Z) {
-			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+			validChar->setCapsuleCollision(ECR_Block);
+			//MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 			UE_LOG(LogTemp, Warning, TEXT("Case Land"));
 			validChar->currPlat = this;
 		}
 		if (validChar->GetActorLocation().Z < MeshComp->GetComponentLocation().Z //if actor is below plat and up was just pressed
 			&& GetWorld()->GetRealTimeSeconds() - validChar->prevUp <.5) {
-			MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+			validChar->setCapsuleCollision(ECR_Overlap);
+			//MeshComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 			UE_LOG(LogTemp, Warning, TEXT("Case Ascend"));
 		}
 	}

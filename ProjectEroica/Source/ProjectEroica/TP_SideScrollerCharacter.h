@@ -112,6 +112,9 @@ public:
 	//lets game know player has died
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 		void endGame();
+	//sets Capsule Collision for platforms
+	UFUNCTION()
+		void setCapsuleCollision(ECollisionResponse E);
 	//Toggles AI
 	UFUNCTION()
 		void ActivateAI();
