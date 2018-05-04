@@ -55,6 +55,7 @@ protected:
 	FString Death = "Death";
 	FString SkillOne = "SkillOne";
 	FString Spawn = "Spawn";
+	FString DashStab = "DashStab";
 
 	//sets char back to idle when appropriate
 	UFUNCTION()
@@ -90,7 +91,6 @@ protected:
 	void HandleUp();
 	void handleDown(float timePressed);
 	void handleAnimation();
-	void clearStacks();
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void BeginPlay() override;
@@ -106,9 +106,20 @@ public:
 	//UFUNCTION()
 		//virtual void OnCharacterEndOverlap(UPrimitiveComponent* OverlappedComponent,
 		//	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//Displays Combo when you hit another player
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void displayCombo();
 	//lets game know player has died
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 		void endGame();
+	//Toggles AI
+	UFUNCTION()
+		void ActivateAI();
+	//Toggles different levels of AI
+	UFUNCTION()
+		void AILevel1();
+	UFUNCTION()
+		void  AILevel2();
 	UFUNCTION(BlueprintCallable)
 		void Die();
 	UFUNCTION(BlueprintCallable)
@@ -146,7 +157,7 @@ public:
 
 	//threshold for rocket
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		float rocketThreshold = 1;
+		float rocketThreshold = .4;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		float rocketForce = 1000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -170,6 +181,7 @@ public:
 	bool leftPressed = false;
 	bool rightPressed = false;
 	bool downPressed = false;
+	bool canRocket = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		class UAttackHandler* AttackHandle;

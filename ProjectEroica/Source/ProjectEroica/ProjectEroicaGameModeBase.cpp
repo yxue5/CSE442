@@ -2,6 +2,7 @@
 
 #include "ProjectEroicaGameModeBase.h"
 #include "UObject/ConstructorHelpers.h"
+#include "AI_Kisa.h"
 
 AProjectEroicaGameModeBase::AProjectEroicaGameModeBase() {
 	// set default pawn class to our Blueprinted character
@@ -13,4 +14,12 @@ AProjectEroicaGameModeBase::AProjectEroicaGameModeBase() {
 	
 }
 
+void AProjectEroicaGameModeBase::activateAI()
+{
+	EnemyAI->isAIMode = !EnemyAI->isAIMode;
+}
 
+void AProjectEroicaGameModeBase::setAISpeed(float speed)
+{
+	EnemyAI->reactionTime = speed;
+}

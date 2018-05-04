@@ -17,6 +17,7 @@
 #include "CharacterStats.h"
 #include "AttackHandler.h"
 #include "AnimInstanceKisa.h"
+#include "ProjectEroicaGameModeBase.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
@@ -34,7 +35,7 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->TargetArmLength = 500.f;
 	CameraBoom->SocketOffset = FVector(0.f,0.f,75.f);
-	CameraBoom->RelativeRotation = FRotator(0.f,180.f,0.f);
+	//CameraBoom->RelativeRotation = FRotator(0.f,180.f,0.f);
 
 	// Create a camera and attach to boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
@@ -50,7 +51,7 @@ ATP_SideScrollerCharacter::ATP_SideScrollerCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 4000.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f,180.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->GravityScale = 2.0f;
 	GetCharacterMovement()->AirControl = 0.80f;
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -80,11 +81,10 @@ void ATP_SideScrollerCharacter::OnCharacterBeginOverlap(UPrimitiveComponent * Ov
 	//UE_LOG(LogTemp, Warning, TEXT("Y diff: %f"), FMath::Abs(validChar->GetActorLocation().Y - GetActorLocation().Y));
 }
 
-
 void ATP_SideScrollerCharacter::Die()
 {
-	CharWeapon->Destroy();
-	Destroy();
+	//CharWeapon->Destroy();
+	//Destroy();
 	endGame();
 }
 
@@ -98,6 +98,9 @@ void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent*
 	PlayerInputComponent->BindAction("Skill1", IE_Pressed, this, &ATP_SideScrollerCharacter::Skill1);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_SideScrollerCharacter::MoveRight);
+	PlayerInputComponent->BindAction("AI", IE_Pressed, this, &ATP_SideScrollerCharacter::ActivateAI);
+	PlayerInputComponent->BindAction("AILevel1", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel1);
+	PlayerInputComponent->BindAction("AILevel2", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel2);
 	ourPlayer = GetWorld()->GetFirstPlayerController();
 }
 
@@ -128,8 +131,9 @@ void ATP_SideScrollerCharacter::BeginPlay()
 	AnimInst->owningChar = this;
 
 	handleAnimation();
-	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, AnimInst->ourAnimation->GetPlayLength(), false);
+	DisableInput(ourPlayer);
 	AnimInst->playOurAnimation();
+	GetWorld()->GetTimerManager().SetTimer(StunHandle, this, &ATP_SideScrollerCharacter::EndStun, AnimInst->ourAnimation->GetPlayLength(), false);
 }
 
 void ATP_SideScrollerCharacter::Tick(float DeltaTime)
@@ -166,6 +170,7 @@ void ATP_SideScrollerCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor *
 	}
 	//else if we're landing on the floor
 	else {
+		canRocket = true;
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 		if (State == Jumping || State == Knockup) {
 			State = Land;
@@ -183,6 +188,7 @@ FString ATP_SideScrollerCharacter::getState()
 void ATP_SideScrollerCharacter::EndStun()
 {
 	ourPlayer->GetPawn()->EnableInput(ourPlayer);
+	State = Idle;
 }
 
 void ATP_SideScrollerCharacter::setState(FString state)
@@ -203,7 +209,7 @@ void ATP_SideScrollerCharacter::stopMovement()
 
 void ATP_SideScrollerCharacter::stopAttack() {
 	AnimInst->isLooping = true;
-	GetCharacterMovement()->StopMovementImmediately();
+	//GetCharacterMovement()->StopMovementImmediately();
 	if (GetCharacterMovement()->IsFalling()) {
 		State = Jumping;
 	}
@@ -218,22 +224,24 @@ void ATP_SideScrollerCharacter::Attack()
 	//if it's possible to trigger a new attack
 	if (newState != State) {
 		//Zeroes out acceleration from previous movement
-		GetCharacterMovement()->StopMovementImmediately();		
-		//clears this handle so our state doesnt get reset to idle by a previous stop movement timer after our move is triggered
-		GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+		//GetCharacterMovement()->StopMovementImmediately();		
+		float origTime = GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle);
 		if (newState == DashAttacking) {
 			if (prevLeft > prevRight) Dash(1);
 			else Dash(-1);
 		}
+		//clears this handle so our state doesnt get reset to idle by a previous stop movement timer after our move is triggered
+		//GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+		GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, AttackHandle->attackDuration, false);
 		State = newState;
 		//then allow weapon to start detecting collisions
 		CharWeapon->CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-		//determines what our attack does to the other player
-		AttackHandle->initializeAttack(State);
 		//Update the Animation we're playing
 		handleAnimation();
 		//Length of attack is equal to the length of the animation
 		AttackHandle->attackDuration = AnimInst->ourAnimation->GetPlayLength();
+		//determines what our attack does to the other player
+		AttackHandle->initializeAttack(State);
 		//Set attack state to end based on Attack Handle's determined Attack duration
 		GetWorld()->GetTimerManager().SetTimer(AttackingHandle, this, &ATP_SideScrollerCharacter::stopAttack, AttackHandle->attackDuration, false);
 	}
@@ -245,10 +253,10 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 	//position the character to the direction of the attack
 	float knockupDirection = 1;
 	if (attackDirection < 1) {
-		SetActorRotation(FRotator(0, 0, 0));
+		SetActorRotation(FRotator(0, 90, 0));
 		knockupDirection = -1;
 	}
-	else SetActorRotation(FRotator(0, 180, 0));
+	else SetActorRotation(FRotator(0, 270, 0));
 	UGameplayStatics::PlaySound2D(this, AnimInst->HitSound);
 	UGameplayStatics::PlaySound2D(this, AnimInst->PainSound);
 	Stats->hp -= dmg;
@@ -312,26 +320,27 @@ void ATP_SideScrollerCharacter::Skill1()
 }
 void ATP_SideScrollerCharacter::HandleUp()
 {
-	if (!GetMovementComponent()->IsFalling()) {
-		upPressed = true;
-		float timePressed = GetWorld()->GetRealTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("Up pressed: %f"), timePressed);
-		prevUp = timePressed;
-		//checks for rocket
-		if (timePressed - prevRight < simulThreshold) {
-			float timeTaken = GetWorld()->GetRealTimeSeconds() - prevRight2;
-			if (timeTaken < rocketThreshold) {
-				Rocket(-1, timeTaken);
-				return;
-			}
+	upPressed = true;
+	float timePressed = GetWorld()->GetRealTimeSeconds();
+	UE_LOG(LogTemp, Warning, TEXT("Up pressed: %f"), timePressed);
+	prevUp = timePressed;
+	//checks for rocket
+	if (timePressed - prevRight < simulThreshold && canRocket == true) {
+		float timeTaken = GetWorld()->GetRealTimeSeconds() - prevRight2;
+		if (timeTaken < rocketThreshold) {
+			Rocket(-1, timeTaken);
+			return;
 		}
-		else if (timePressed - prevLeft < simulThreshold) {
-			float timeTaken = GetWorld()->GetRealTimeSeconds() - prevLeft2;
-			if (timeTaken < rocketThreshold) {
-				Rocket(1, timeTaken);
-				return;
-			}
+	}
+	else if (timePressed - prevLeft < simulThreshold) {
+		float timeTaken = GetWorld()->GetRealTimeSeconds() - prevLeft2;
+		if (timeTaken < rocketThreshold && canRocket == true) {
+			Rocket(1, timeTaken);
+			return;
 		}
+	}
+
+	else if (!GetMovementComponent()->IsFalling()) {
 		//otherwis we just jump
 		Jump();
 	}
@@ -348,13 +357,13 @@ void ATP_SideScrollerCharacter::Jump() {
 }
 void ATP_SideScrollerCharacter::MoveRight(float Value)
 {
-	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && Value != 0) {
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0.f && GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <= 0.f && Value != 0) {
 		//if we can run
 		if (State == Running) {
 			State = Running;
 		}
 		//can move if you aren't mid move
-		else if (GetWorld()->GetTimerManager().GetTimerRemaining(AttackingHandle) <= 0.f)
+		else
 		{
 			float curr = GetWorld()->GetRealTimeSeconds();
 			GetCharacterMovement()->MaxWalkSpeed = 200.0f;
@@ -370,6 +379,9 @@ void ATP_SideScrollerCharacter::MoveRight(float Value)
 				State = Walking;
 			}
 		}
+		if(Value>0)
+		SetActorRotation(FRotator(0, 270, 0));
+		else SetActorRotation(FRotator(0, 90, 0));
 		// add movement in that direction
 		AddMovementInput(FVector(0.f, -Value, 0.f));
 	}
@@ -380,14 +392,14 @@ void ATP_SideScrollerCharacter::handleRight(float timePressed)
 {
 	rightPressed = true;
 	//checks rocket
-	if (timePressed - prevUp < simulThreshold) {
+	if (timePressed - prevUp < simulThreshold && canRocket == true) {
 		float timeTaken = timePressed - prevRight;
 		if (timeTaken < rocketThreshold) {
 			Rocket(-1, timeTaken);
 		}
 	}
 	//if dash is possible
-	else if (timePressed - prevRight < dashThreshold)
+	else if (timePressed - prevRight < dashThreshold && canRocket == true)
 	{
 		if (timePressed - prevDash >= dashCoolDown) {
 			Dash(-1);
@@ -401,7 +413,7 @@ void ATP_SideScrollerCharacter::handleLeft(float timePressed)
 {
 	leftPressed = true;
 	//checks rocket
-	if (timePressed - prevUp < simulThreshold) {
+	if (timePressed - prevUp < simulThreshold && canRocket == true) {
 		float timeTaken = timePressed - prevLeft;
 		if (timeTaken < rocketThreshold) {
 			Rocket(1, timeTaken);
@@ -438,7 +450,9 @@ void ATP_SideScrollerCharacter::handleDown(float timePressed)
 	if (currPlat != nullptr) {
 		if (currPlat->BoxComp->IsOverlappingActor(this)) {
 			currPlat->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-			State = "Jump";
+			if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0) {
+				State = "Jump";
+			}
 			currPlat = nullptr;
 		}
 	}
@@ -464,6 +478,7 @@ void ATP_SideScrollerCharacter::Rocket(float Direction, float Time)
 	LaunchCharacter(FVector(0.f, rocketForce * Direction, rocketUpForce), true, false);
 	GetWorld()->GetTimerManager().SetTimer(EndMovementHandle, this, &ATP_SideScrollerCharacter::stopMovement, rocketDuration, false);
 	State = Rocketing;
+	canRocket = false;
 	UE_LOG(LogTemp, Warning, TEXT("Rocket!"));
 }
 
@@ -475,10 +490,26 @@ void ATP_SideScrollerCharacter::handleAnimation()
 	else UE_LOG(LogTemp, Warning, TEXT("Still No AnimBP!"));
 }
 
-void  ATP_SideScrollerCharacter::clearStacks() {
-		LeftStack.Empty();
-		RightStack.Empty();
-		UpStack.Empty();
-		DownStack.Empty();
+//void  ATP_SideScrollerCharacter::clearStacks() {
+//		LeftStack.Empty();
+//		RightStack.Empty();
+//		UpStack.Empty();
+//		DownStack.Empty();
+//}
+
+
+void ATP_SideScrollerCharacter::ActivateAI()
+{
+	GetWorld()->GetAuthGameMode<AProjectEroicaGameModeBase>()->activateAI();
+}
+
+void ATP_SideScrollerCharacter::AILevel1()
+{
+	GetWorld()->GetAuthGameMode<AProjectEroicaGameModeBase>()->setAISpeed(1.0f);
+}
+
+void ATP_SideScrollerCharacter::AILevel2()
+{
+	GetWorld()->GetAuthGameMode<AProjectEroicaGameModeBase>()->setAISpeed(0.6f);
 }
 
