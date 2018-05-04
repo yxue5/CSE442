@@ -108,3 +108,47 @@ Jin Lin
 Summary:
 Last Week, Xinyu was finxed the passable gearboard and create a new CaveMap, Jie finished the main menu and Yang finished add the death state the character skills.
 This week, Jie is going to do the landing page and pause menu. Yang is going to add the character skill attack and the animation for the skills. Xinyu is going to add some animation on the CaveMap.
+
+
+
+
+Date: 4/17/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+
+Summary:
+Last week, Xinyu created a gameover page map, Jie finished the landing page and Yang merged all parts of the code together and filmed beta video.
+This week, Xinyu is going to create a new map, Jie is going to place the thumbnail for each of the map in main manu, Yang is going to fix the collision between two idol, so that the idol could not pass through each other.
+
+
+
+Date: 4/24/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Xinyu was assigned to make character selection screen and has problem with adjust the position of the widget on the screen. Jie finished add the abstract picture for each map on map selection menu. Yang maked the flash step and finished the rocket stap.
+This week, Xinyu is going to fix the character selection page and add character animation to the page, Yang is going to finish the flash step, Jie is going to fix the pause menu.
+
+
+
+Date: 5/1/2018
+Time: 4:00 - 5:00
+
+Attend Member:
+Xinyu Chen
+Yang Xue
+Jin Lin
+
+Summary:
+Last week, Xinyu was continue to make character selection screen. Jie was assigned to fix the pause menu, still has problem with mouse showing problem. Yang finished the flash step.
+This week, Xinyu is going to continue the character selection page, Jie is going to add the combo widget to the screen when player plays the combo attack. Yang is going to fix the AI.

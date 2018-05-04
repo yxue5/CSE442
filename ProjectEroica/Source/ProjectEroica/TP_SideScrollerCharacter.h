@@ -38,6 +38,8 @@ protected:
 	FString Running = "Running";
 	FString Dashing = "Dash";
 	FString Jumping = "Jump";
+	FString Rocketing = "Rocketing";
+	FString Flashing = "Flashing";
 	FString Attacking = "Attack";
 	FString Stunned = "Stunned";
 	FString Knockup = "Knockup";
@@ -48,9 +50,12 @@ protected:
 	FString Combo3 = "Combo3";
 	FString Combo4 = "Combo4";
 	FString Combo5 = "Combo5";
+	FString DashAttacking = "DashAttack";
 	FString Land = "Land";
 	FString Death = "Death";
 	FString SkillOne = "SkillOne";
+	FString Spawn = "Spawn";
+	FString DashStab = "DashStab";
 
 	//sets char back to idle when appropriate
 	UFUNCTION()
@@ -65,7 +70,10 @@ protected:
 	void stopMovement();
 
 	UFUNCTION()
-		void Dash(float Direction);
+		void Flash(float Direction);
+	void Dash(float Direction);
+	UFUNCTION()
+	void Rocket(float Direction, float Time);
 
 	UFUNCTION()
 		void stopAttack();
@@ -80,7 +88,7 @@ protected:
 	void Attack();
 	void handleRight(float timePressed);
 	void handleLeft(float timePressed);
-	void handleUp(float timePressed);
+	void HandleUp();
 	void handleDown(float timePressed);
 	void handleAnimation();
 	// APawn interface
@@ -92,9 +100,29 @@ protected:
 public:
 	
 	ATP_SideScrollerCharacter();
+	UFUNCTION()
+		virtual void OnCharacterBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//UFUNCTION()
+		//virtual void OnCharacterEndOverlap(UPrimitiveComponent* OverlappedComponent,
+		//	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//Displays Combo when you hit another player
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void displayCombo();
 	//lets game know player has died
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 		void endGame();
+	//sets Capsule Collision for platforms
+	UFUNCTION()
+		void setCapsuleCollision(ECollisionResponse E);
+	//Toggles AI
+	UFUNCTION()
+		void ActivateAI();
+	//Toggles different levels of AI
+	UFUNCTION()
+		void AILevel1();
+	UFUNCTION()
+		void  AILevel2();
 	UFUNCTION(BlueprintCallable)
 		void Die();
 	UFUNCTION(BlueprintCallable)
@@ -116,20 +144,47 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	UPROPERTY() TArray<float> LeftStack;
+	UPROPERTY() TArray<float> RightStack;
+	UPROPERTY() TArray<float> UpStack;
+	UPROPERTY() TArray<float> DownStack;
 	//threshold for dash
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		float dashThreshold = .2;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		float dashForce = 1500;
-
+		float dashForce = 700;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		float dashCoolDown = .4;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		float dashDuration= .3;
+
+	//threshold for rocket
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float rocketThreshold = .4;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float rocketForce = 1000;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float rocketUpForce = 1000;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float rocketDuration = .3;
+	//proper x value for our character.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float properX = 0;
+	//threshold for being considered simultaneously pressed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		float simulThreshold = 0.1;
+
 	float prevUp, prevDown, prevLeft, prevRight, prevAttack = 0;
+	float prevUp2, prevDown2, prevLeft2, prevRight2 = 0;
+
+
 	float prevDash = 0;
+	float prevJump = 0;
+	bool upPressed = false;
+	bool leftPressed = false;
+	bool rightPressed = false;
+	bool downPressed = false;
+	bool canRocket = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		class UAttackHandler* AttackHandle;

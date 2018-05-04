@@ -16,5 +16,11 @@ class PROJECTEROICA_API AProjectEroicaGameModeBase : public AGameModeBase
 	
 public:
 	AProjectEroicaGameModeBase();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class AAI_Kisa* EnemyAI;
 	
+	UFUNCTION()
+		void activateAI();
+	UFUNCTION()
+		void setAISpeed(float speed);
 };

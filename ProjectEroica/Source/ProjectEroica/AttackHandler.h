@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		float DashAttackY = 200;
 	UPROPERTY(EditDefaultsOnly)
-		float DashAttackZ = 600;
+		float DashAttackZ = 700;
 	UPROPERTY(VisibleAnywhere)
 		FString hitType = "Stunned";
 };

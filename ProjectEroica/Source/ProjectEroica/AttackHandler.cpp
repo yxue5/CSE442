@@ -28,28 +28,28 @@ void UAttackHandler::initializeAttack(FString attackName)
 		hitType = "Stunned";
 	}
 	if (attackName == "Combo1") {
-		stunDuration = .7;
+		stunDuration = .5;
 		dmg = 15;
 		hitType = "Stunned";
 	}
 	else if (attackName == "Combo2") {
-		stunDuration = .7;
-		dmg = 15;
+		stunDuration = .5;
+		dmg = 11;
 		hitType = "Stunned";
 	}
 	else if (attackName == "Combo3") {
-		stunDuration = .7;
-		dmg = 15;
+		stunDuration = .5;
+		dmg = 19;
 		hitType = "Stunned";
 	}
 	else if (attackName == "Combo4") {
-		stunDuration = .7;
-		dmg = 15;
+		stunDuration = .5;
+		dmg = 13;
 		hitType = "Stunned";
 	}
 	else if (attackName == "Combo5") {
-		stunDuration = .7;
-		dmg = 15;
+		stunDuration = .5;
+		dmg = 22;
 		hitType = "Stunned";
 	}
 	else if (attackName == "DashAttack") {
@@ -57,22 +57,26 @@ void UAttackHandler::initializeAttack(FString attackName)
 		hitType = "Knockup";
 		KnockupForce.Y= DashAttackY;
 		KnockupForce.Z = DashAttackZ;
-		attackDuration = .5;
 	}
 	else if (attackName == "JumpAttack") {
 		dmg = 5;
 		stunDuration = 1;
 		hitType = "Stunned";
-		attackDuration = .3;
+		attackDuration = .5;
+	}
+	else if (attackName == "JumpStab") {
+		dmg = 15;
+		stunDuration = .7;
+		hitType = "Stunned";
 	}
 }
 
 FString UAttackHandler::DetermineAttack(FString currState, float currTime)
 {
-	if (currState == "Dash" || currState == "Running") {
+	if (currState == "Dash" || currState == "Rocketing" || currState == "Flashing" || currState == "Running") {
 		return "DashAttack";
 	}
-	else if (currState == "Idle" || currState == "Walking") {
+	else if ((currState == "Idle" || currState == "Walking") &&  currTime - prevAttack >= 1.5f){
 		prevAttack = currTime;
 		return "Combo1";
 	}

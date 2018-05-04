@@ -43,31 +43,26 @@ void AAI_Kisa::BeginPlay()
 
 void AAI_Kisa::Scout()
 {
+
 	//if we are in AI Mode
-	if (isAIMode == true) {
+	if (isAIMode == true && InputEnabled()) {
 		float currRotation = GetActorRotation().Yaw;
 		float currTime = GetWorld()->GetRealTimeSeconds();
 		//if we haven't seen the pawn last time
-		if (currTime - lastSeenPawn > .6) {
+		if (currTime - lastSeenPawn > reactionTime) {
 			justSawPawn = false;
 			SetActorRotation(FRotator(0, currRotation - 180, 0));
-			GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
+			//GetWorld()->GetTimerManager().ClearTimer(EndMovementHandle);
 		}
 		//float currRotation = GetActorRotation().Yaw;
 		//move if you see pawn and aren't currently attacking
 		if (justSawPawn == true) {
-			//if we're within striking distance
-			if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 100) {
-				currTime = GetWorld()->GetRealTimeSeconds();
-				if (currTime - prevAttack > AttackCoolDown) {
-					UE_LOG(LogTemp, Warning, TEXT("UPDATE!"));
-					State = Idle;
-					Attack();
-					prevAttack = currTime;
-				}
+			//if we need to increase elevation
+			if (FMath::Abs(SeenPawnLocation.Z - GetActorLocation().Z) >= 100) {
+				Jump();
 			}
-			// else we have to move closer
-			else {
+			//First moves towards the pawn
+			if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) > 100) {
 				//slow down dash if we're close to Pawn
 				if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 300) {
 					dashForce = 750;
@@ -87,8 +82,16 @@ void AAI_Kisa::Scout()
 					MoveRight(1);
 				}
 			}
+		
+			//if we're within striking distance
+			if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) < 100) {
+				currTime = GetWorld()->GetRealTimeSeconds();
+				//State = Idle;
+				Attack();
+				prevAttack = currTime;
+			}
 		}
-
+		PawnSensingComp->SensingInterval = reactionTime;
 	}
-	GetWorld()->GetTimerManager().SetTimer(ScoutHandle, this, &AAI_Kisa::Scout, 1.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(ScoutHandle, this, &AAI_Kisa::Scout, reactionTime, false);
 }
