@@ -32,7 +32,7 @@ Flash Step: down after rocket step
 AI Activation: The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
 
 Youtube Link:
-https://www.youtube.com/watch?v=suYD8Pv9jwg&feature=youtu.be
+https://www.youtube.com/watch?v=TWX91RzX7lc&feature=youtu.be
 
 Gitter:
 Private Community:
