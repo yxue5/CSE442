@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "TP_SideScrollerCharacter.h"
 #include "AttackHandler.h"
+#include "TimerManager.h" 
 #include "AI_Kisa.h"
 //#include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
 
@@ -39,6 +40,15 @@ void AWeapon::OnWeaponBeginOverlap(UPrimitiveComponent * OverlappedComponent, AA
 		UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped player!"));
 		validChar->handleAttack(wepOwner->AttackHandle->dmg, wepOwner->AttackHandle->hitType, wepOwner->AttackHandle->stunDuration,wepOwner->AttackHandle->KnockupForce,wepOwner->GetActorRotation().Yaw);
 		wepOwner->AttackHandle->hitCounter++;
+		comboCount++;
+		GetWorld()->GetTimerManager().SetTimer(ComboHandle, this, &AWeapon::resetCombo,comboThreshold, false);
+		wepOwner->displayCombo();
 	}
+}
+
+void AWeapon::resetCombo()
+{
+	comboCount = 0;
+	wepOwner->displayCombo();
 }
 

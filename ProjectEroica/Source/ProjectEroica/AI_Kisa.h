@@ -27,7 +27,10 @@ public:
 	void BeginPlay() override;
 	UFUNCTION()
 	void Scout();
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float AttackCoolDown = 1.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float reactionTime = 1.0f;
 	float AIprevDash = 0;
 	float prevAttack = 0;
 

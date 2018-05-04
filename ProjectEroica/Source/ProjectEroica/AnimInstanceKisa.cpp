@@ -15,8 +15,9 @@ UAnimInstanceKisa::UAnimInstanceKisa()
 
 void UAnimInstanceKisa::endParticleEffect()
 {
-	UParticleSystemComponent* p = activeDustParticles.Pop();
+	UParticleSystemComponent* p = activeDustParticles[0];
 	p->DestroyComponent();
+	activeDustParticles.RemoveAt(0);
 }
 
 
@@ -27,22 +28,22 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 			
 			//creates a new dust particle and adds it to array of active particles
 			activeDustParticles.Add(UGameplayStatics::SpawnEmitterAtLocation(this, DustParticle, owningChar->GetMesh()->GetSocketLocation("DustSocket")));
-			FTimerHandle temp = FTimerHandle();
-			GetWorld()->GetTimerManager().SetTimer(temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
+			FTimerHandle* temp = new FTimerHandle();
+			GetWorld()->GetTimerManager().SetTimer(*temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
 		}
 		else if (newState == "Flashing") {
 			//creates a new dust particle and adds it to array of active particles
-			activeDustParticles.Add(UGameplayStatics::SpawnEmitterAtLocation(this, DustParticle, owningChar->GetMesh()->GetSocketLocation("DustSocket")));
-			FTimerHandle temp = FTimerHandle();
-			GetWorld()->GetTimerManager().SetTimer(temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
+			//activeDustParticles.Add(UGameplayStatics::SpawnEmitterAtLocation(this, DustParticle, owningChar->GetMesh()->GetSocketLocation("DustSocket")));
+			//FTimerHandle* temp = new FTimerHandle();
+			//GetWorld()->GetTimerManager().SetTimer(*temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
 		}
 		else if (newState == "Land") {
 			UGameplayStatics::PlaySound2D(this, LandSound);
 
 			//creates a new dust particle and adds it to array of active particles
 			activeDustParticles.Add(UGameplayStatics::SpawnEmitterAtLocation(this, DustParticle, owningChar->GetMesh()->GetSocketLocation("DustSocket")));
-			FTimerHandle temp = FTimerHandle();
-			GetWorld()->GetTimerManager().SetTimer(temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
+			FTimerHandle* temp = new FTimerHandle();
+			GetWorld()->GetTimerManager().SetTimer(*temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
 		}
 		else if (newState.StartsWith("Combo")) {
 			UGameplayStatics::PlaySound2D(this, Combo1);
@@ -53,11 +54,16 @@ void UAnimInstanceKisa::HandleState(FString newState) {
 
 			//creates a new dust particle and adds it to array of active particles
 			activeDustParticles.Add(UGameplayStatics::SpawnEmitterAtLocation(this, DustParticle, owningChar->GetMesh()->GetSocketLocation("DustSocket")));
-			FTimerHandle temp = FTimerHandle();
-			GetWorld()->GetTimerManager().SetTimer(temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
+			FTimerHandle* temp = new FTimerHandle();
+			GetWorld()->GetTimerManager().SetTimer(*temp, this, &UAnimInstanceKisa::endParticleEffect, dustDuration, false);
+		}
+		else if (newState == "SkillOne") {
+			UGameplayStatics::PlaySound2D(this, DashAttackSound);
+			isLooping = false;
 		}
 		else if (newState == "JumpAttack") {
 			UGameplayStatics::PlaySound2D(this, JumpAttackSound);
+			isLooping = false;
 		}
 		else if (newState == "Death") {
 			UGameplayStatics::PlaySound2D(this, DeathSound);
