@@ -30,7 +30,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float AttackCoolDown = 1.0f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		float reactionTime = 1.0f;
+		float reactionTime = 0.4f;
 	float AIprevDash = 0;
 	float prevAttack = 0;
 

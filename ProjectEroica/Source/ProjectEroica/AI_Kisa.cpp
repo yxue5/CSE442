@@ -43,8 +43,9 @@ void AAI_Kisa::BeginPlay()
 
 void AAI_Kisa::Scout()
 {
+
 	//if we are in AI Mode
-	if (isAIMode == true) {
+	if (isAIMode == true && InputEnabled()) {
 		float currRotation = GetActorRotation().Yaw;
 		float currTime = GetWorld()->GetRealTimeSeconds();
 		//if we haven't seen the pawn last time
@@ -56,6 +57,10 @@ void AAI_Kisa::Scout()
 		//float currRotation = GetActorRotation().Yaw;
 		//move if you see pawn and aren't currently attacking
 		if (justSawPawn == true) {
+			//if we need to increase elevation
+			if (FMath::Abs(SeenPawnLocation.Z - GetActorLocation().Z) >= 100) {
+				Jump();
+			}
 			//First moves towards the pawn
 			if (FMath::Abs(SeenPawnLocation.Y - GetActorLocation().Y) > 100) {
 				//slow down dash if we're close to Pawn

@@ -99,8 +99,8 @@ void ATP_SideScrollerCharacter::SetupPlayerInputComponent(class UInputComponent*
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATP_SideScrollerCharacter::MoveRight);
 	PlayerInputComponent->BindAction("AI", IE_Pressed, this, &ATP_SideScrollerCharacter::ActivateAI);
-	PlayerInputComponent->BindAction("AILevel1", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel1);
-	PlayerInputComponent->BindAction("AILevel2", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel2);
+	//PlayerInputComponent->BindAction("AILevel1", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel1);
+	//PlayerInputComponent->BindAction("AILevel2", IE_Pressed, this, &ATP_SideScrollerCharacter::AILevel2);
 	ourPlayer = GetWorld()->GetFirstPlayerController();
 }
 
@@ -263,6 +263,7 @@ void ATP_SideScrollerCharacter::handleAttack(float dmg, FString stunType, float 
 	State = stunType;
 	//if we're dead then disable input
 	if (Stats->hp <= 0) {
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 		State = Death;
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		PrimaryActorTick.bCanEverTick = false;
@@ -449,7 +450,8 @@ void ATP_SideScrollerCharacter::handleDown(float timePressed)
 	}
 	if (currPlat != nullptr) {
 		if (currPlat->BoxComp->IsOverlappingActor(this)) {
-			currPlat->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+			//currPlat->MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+			setCapsuleCollision(ECollisionResponse::ECR_Overlap);
 			if (GetWorld()->GetTimerManager().GetTimerRemaining(EndMovementHandle) <= 0) {
 				State = "Jump";
 			}
@@ -497,7 +499,9 @@ void ATP_SideScrollerCharacter::handleAnimation()
 //		DownStack.Empty();
 //}
 
-
+void ATP_SideScrollerCharacter::setCapsuleCollision(ECollisionResponse E) {
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Vehicle, E);
+}
 void ATP_SideScrollerCharacter::ActivateAI()
 {
 	GetWorld()->GetAuthGameMode<AProjectEroicaGameModeBase>()->activateAI();

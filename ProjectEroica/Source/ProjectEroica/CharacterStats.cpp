@@ -9,9 +9,9 @@ UCharacterStats::UCharacterStats()
 {
 
 	// ...
-	maxHP = 100;
+	maxHP = 200;
 	maxMP = 100;
-	hp = 100;
+	hp = 200;
 	mp = 0;
 	hpRegen = .2;
 	mpRegen = .5;

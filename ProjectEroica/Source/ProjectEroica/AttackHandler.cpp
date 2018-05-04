@@ -76,7 +76,7 @@ FString UAttackHandler::DetermineAttack(FString currState, float currTime)
 	if (currState == "Dash" || currState == "Rocketing" || currState == "Flashing" || currState == "Running") {
 		return "DashAttack";
 	}
-	else if (currState == "Idle" || currState == "Walking") {
+	else if ((currState == "Idle" || currState == "Walking") &&  currTime - prevAttack >= 1.5f){
 		prevAttack = currTime;
 		return "Combo1";
 	}

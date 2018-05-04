@@ -31,12 +31,12 @@ public:
 	void updateStats();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	float maxHP = 100;
+	float maxHP = 200;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float maxMP = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	float hp = 100;
+	float hp = 200;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float hpRegen = 2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
