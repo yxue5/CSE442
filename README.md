@@ -25,6 +25,10 @@ Jump Attack: If you press Z while jumping, you can do short but quick jabs in th
 
 Walk: Press/Hold left or right
 
+Rocket Step: >(>^) or <(<^)
+
+Flash Step: down after rocket step
+
 AI Activation: The enemy AI is turned off by default. However, if you wish to fight the AI, press I to turn him on. Don't go up too high though or he won't be able to see you anymore!
 
 Youtube Link:
