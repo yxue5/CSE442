@@ -1,0 +1,8 @@
+{
+	"BuildId": "4212847",
+	"Modules": 
+	{
+		"GameSparks": "UE4Editor-GameSparks.dll",
+		"OnlineSubsystemGameSparks": "UE4Editor-OnlineSubsystemGameSparks.dll"
+	}
+}
